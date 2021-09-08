@@ -20,11 +20,16 @@ public class Log_In implements Logging_In {
 		
 		System.out.println("Welcome to our ABC Bank, please log in...");
 		
+		System.out.print("Enter username: ");
 		String user = sc.nextLine();
 		
-		//Items authenticate = new Items(user);
+		if (validate.auth(user)) {
+			System.out.println("Success!");
+		}else {
+			System.out.println("You don't have access to our bank!");
+		}
 		
-		validate.auth(user);
+		
 	
 	
 	
