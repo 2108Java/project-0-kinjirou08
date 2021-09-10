@@ -16,4 +16,9 @@ public class auth_validate implements Security {
 		
 	}
 
+	public boolean validate(String user, String pass) {
+		// TODO Auto-generated method stub
+		return database.validate(user, pass);
+	}
+
 }
