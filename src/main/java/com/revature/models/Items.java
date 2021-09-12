@@ -4,6 +4,10 @@ public class Items {
 
 	private String user;
 	private String password;
+	private String checkings;
+	private String savings;
+	private String jointAcc;
+	private boolean isApproved;
 	
 	public Items() {
 		super();
@@ -19,6 +23,16 @@ public class Items {
 		super();
 		this.user = user;
 	}
+	public Items(String cUser, String cPassword, String checkings2, String savings2, boolean b) {
+		// TODO Auto-generated constructor stub
+	}
+	public Items(String user, String password, boolean isApproved) {
+		super();
+		this.user = user;
+		this.password = password;
+		this.isApproved = isApproved;
+		
+	}
 	public String getUser() {
 		return user;
 	}
@@ -31,5 +45,30 @@ public class Items {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public String getCheckings() {
+		return checkings;
+	}
+	public void setCheckings(String checkings) {
+		this.checkings = checkings;
+	}
+	public String getSavings() {
+		return savings;
+	}
+	public void setSavings(String savings) {
+		this.savings = savings;
+	}
+	public String getJointAcc() {
+		return jointAcc;
+	}
+	public void setJointAcc(String jointAcc) {
+		this.jointAcc = jointAcc;
+	}
+	public boolean isApproved() {
+		return isApproved;
+	}
+	public void setApproved(boolean isApproved) {
+		this.isApproved = isApproved;
+	}
+	
 	
 }

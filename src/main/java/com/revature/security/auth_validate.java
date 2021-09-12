@@ -1,5 +1,6 @@
 package com.revature.security;
 
+import com.revature.models.Items;
 import com.revature.repo.BankDB;
 
 public class auth_validate implements Security {
@@ -19,6 +20,11 @@ public class auth_validate implements Security {
 	public boolean validate(String user, String pass) {
 		// TODO Auto-generated method stub
 		return database.validate(user, pass);
+	}
+
+	public boolean registerAccount(Items addItem) {
+		// TODO Auto-generated method stub
+		return database.insertAccount(addItem);
 	}
 
 }

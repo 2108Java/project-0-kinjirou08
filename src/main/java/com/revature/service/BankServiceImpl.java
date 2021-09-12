@@ -5,15 +5,14 @@ import com.revature.repo.BankDB;
 
 public class BankServiceImpl implements BankService {
 	
-	BankDB database;
+	BankDB database2;
 	
 	public BankServiceImpl (BankDB database) {
-		this.database = database;
+		this.database2 = database;
 	}
 
-	public boolean registerAccount(Items addItem) {
-		// TODO Auto-generated method stub
-		return database.insertAccount(addItem);
+	public boolean registerAccount(Items addItem) {		
+		return database2.insertAccount(addItem);
 	}
 
 }

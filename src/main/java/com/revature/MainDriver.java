@@ -5,6 +5,7 @@ import com.revature.repo.BankDB;
 import com.revature.repo.BankDBImpl;
 
 import com.revature.security.auth_validate;
+import com.revature.service.BankServiceImpl;
 
 public class MainDriver {
 
@@ -14,7 +15,9 @@ public class MainDriver {
 		
 		auth_validate security = new auth_validate(database);
 		
-		Log_In menu = new Log_In(security);
+		BankServiceImpl service = new BankServiceImpl(database);
+		
+		Log_In menu = new Log_In(security, service);
 		
 		menu.display();
 		

@@ -4,26 +4,23 @@ import java.util.Scanner;
 
 import com.revature.models.Items;
 import com.revature.security.auth_validate;
+import com.revature.service.BankService;
 import com.revature.service.BankServiceImpl;
-
-
 
 public class Log_In implements Logging_In {
 	
 	auth_validate security;
+	
 	BankServiceImpl service;
+	
 
-	
-	public Log_In (auth_validate security) {	
+	public Log_In(auth_validate security, BankServiceImpl service) {
 		this.security = security;
-	}
-	
-	public Log_In (BankServiceImpl service) {
 		this.service = service;
 	}
-	
 
-	
+
+
 	public static void optionMenu() {
 		
 		System.out.println("1) Register for an account");
@@ -32,16 +29,21 @@ public class Log_In implements Logging_In {
 	
 	public  void registerAccount() {
 		
-		Scanner sc1 = new Scanner(System.in)
-;	
+		Scanner sc1 = new Scanner(System.in);	
 		System.out.println("Please enter a username: ");
 		String cUser = sc1.nextLine();
-		
+				
 		System.out.println("Please enter a password: ");
 		String cPassword = sc1.nextLine();
-		
-		Items addItem = new Items(cUser, cPassword);
-		
+//				
+//				System.out.println("Please enter an amount for the savings account");
+//				String checkings = sc1.nextLine();
+//				
+//				System.out.println("Please enter an amount for the checkings account");
+//				String savings = sc1.nextLine();
+//				
+		Items addItem = new Items(cUser, cPassword, false);
+				
 		if (service.registerAccount(addItem)) {
 			System.out.println("Success");
 		}
@@ -55,14 +57,17 @@ public class Log_In implements Logging_In {
 		String choose = "";
 		
 		
-		System.out.println("Welcome to ABC Bank, what would you like to do?");
-		optionMenu();
-		choose = sc.nextLine();
+		
 		
 		while (result) {
+			
+			System.out.println("Welcome to ABC Bank, what would you like to do?");
+			optionMenu();
+			choose = sc.nextLine();
+			
 			switch (choose) {
 				case "1":
-					registerAccount();
+					registerAccount();									
 					break;
 				case "2":
 					System.out.print("Enter username: ");
