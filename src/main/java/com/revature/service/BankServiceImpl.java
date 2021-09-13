@@ -15,4 +15,14 @@ public class BankServiceImpl implements BankService {
 		return database2.insertAccount(addItem);
 	}
 
+	public Items[] getAccounts() {
+		// TODO Auto-generated method stub
+		return database2.selectAllAccounts();
+	}
+
+	public boolean completeARegistration(int id) {
+		// TODO Auto-generated method stub
+		return database2.upadteARegistration(id);
+	}
+
 }

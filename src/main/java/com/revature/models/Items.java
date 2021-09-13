@@ -1,7 +1,8 @@
 package com.revature.models;
 
 public class Items {
-
+	
+	private int id;
 	private String user;
 	private String password;
 	private String checkings;
@@ -33,6 +34,22 @@ public class Items {
 		this.isApproved = isApproved;
 		
 	}
+	
+	public Items(int id, String user, boolean isComplete) {
+		
+		super();
+		this.id = id;
+		this.user = user;
+		this.isApproved = isComplete;
+		
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public String getUser() {
 		return user;
 	}

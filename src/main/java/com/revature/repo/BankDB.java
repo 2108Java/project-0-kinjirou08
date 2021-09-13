@@ -14,5 +14,8 @@ public interface BankDB {
 
 	public boolean checkApproved(String user, String pass);
 
+	public Items[] selectAllAccounts();
+
+	public boolean upadteARegistration(int id);
 
 }

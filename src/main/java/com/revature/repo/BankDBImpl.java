@@ -187,4 +187,64 @@ public class BankDBImpl implements BankDB {
 
 	}
 
+	@Override
+	public Items[] selectAllAccounts() {
+		
+		Items[] allAccounts = new Items[10];
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			String query = "SELECT * FROM customer_table ORDER BY c_id ASC";
+			
+			PreparedStatement ps = connect.prepareStatement(query);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			int i = 0;
+			
+			while (rs.next()) {
+				
+				allAccounts[i] = new Items(rs.getInt("c_id"),
+						rs.getString("c_username"),
+						rs.getBoolean("c_is_approved"));
+				i++;
+				
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+						
+		return allAccounts;
+		
+	}
+
+	@Override
+	public boolean upadteARegistration(int id) {
+		
+		boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			String query = "UPDATE customer_table set c_is_approved = ?  WHERE c_id = ?";
+			
+			PreparedStatement ps = connect.prepareStatement(query);
+			
+			ps.setBoolean(1,true);
+			ps.setInt(2, id);
+		
+			ps.executeUpdate();
+			
+			success = true;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return success;
+	}
+
 }

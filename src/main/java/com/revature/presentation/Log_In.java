@@ -4,14 +4,14 @@ import java.util.Scanner;
 
 import com.revature.models.Items;
 import com.revature.security.auth_validate;
-import com.revature.service.BankService;
 import com.revature.service.BankServiceImpl;
 
 public class Log_In implements Logging_In {
 	
 	auth_validate security;
 	
-	BankServiceImpl service;	
+	static BankServiceImpl service;	
+
 
 	public Log_In(auth_validate security, BankServiceImpl service) {
 		this.security = security;
@@ -19,7 +19,25 @@ public class Log_In implements Logging_In {
 	}
 
 
-
+	public static void prettyDisplay(Items[] allAccounts) {
+		
+		for (int i = 0; i < allAccounts.length; i ++) {
+				if (allAccounts[i] != null) {
+					System.out.println("ID: " + allAccounts[i].getId());
+					System.out.println("Username: " + allAccounts[i].getUser());
+					
+					if (allAccounts[i].isApproved() == true) {
+						System.out.println("Approved? Yes");
+					}else if ((allAccounts[i].isApproved() == false)) {
+						System.out.println("Approved? No");
+				}
+				System.out.println("");
+				}
+		}
+		
+	}
+	
+	
 	public static void optionMenu() {
 		
 		System.out.println("1) Register for an account");
@@ -28,7 +46,7 @@ public class Log_In implements Logging_In {
 	
 	public static void employeeMenu() {
 		
-		
+		Items[] allAccounts;
 		
 		System.out.println("1) Approve a customer registration");
 		System.out.println("2) Reject a customer registration");
@@ -43,13 +61,22 @@ public class Log_In implements Logging_In {
 		
 		switch (option) {
 		case "1":
-			System.out.println("Inside case 1");
+			System.out.println("Which customer you want to approve their registration?");
+			allAccounts = service.getAccounts();
+			prettyDisplay(allAccounts);
+			
+			int id = Integer.parseInt(sc.nextLine());
+			if (service.completeARegistration(id)) {
+				System.out.println("Registration complete, customer can use his/her account now");
+			} else {
+				System.out.println("Not completed, try again! ");
+				System.out.println("");
+			}
 			break;
+					
 		}
-		
-		
-	}
 	
+	}
 	public static void customerMenu() {
 		
 		System.out.println("1) Apply for a new bank account");
@@ -91,9 +118,7 @@ public class Log_In implements Logging_In {
 			} else {
 				checking = false;
 			}
-		}
-		
-				
+		}			
 		System.out.println("Please enter a password: ");
 		String cPassword = sc1.nextLine();
 //				
@@ -113,6 +138,7 @@ public class Log_In implements Logging_In {
 	}
 		
 	public void display() {
+		
 		
 		Scanner sc = new Scanner(System.in);
 		boolean result = true;
