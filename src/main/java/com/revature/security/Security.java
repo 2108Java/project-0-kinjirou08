@@ -6,4 +6,7 @@ public interface Security {
 	
 	public boolean validate(String user, String pass);
 	
+	public boolean checkStatus(String user, String pass);
+	
+	public boolean checkApproved(String user, String pass);
 }

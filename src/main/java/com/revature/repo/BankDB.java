@@ -10,5 +10,9 @@ public interface BankDB {
 
 	public boolean insertAccount(Items addItem);
 
+	public boolean selectStatus(String user, String pass);
+
+	public boolean checkApproved(String user, String pass);
+
 
 }

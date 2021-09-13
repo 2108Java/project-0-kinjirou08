@@ -107,13 +107,7 @@ public class BankDBImpl implements BankDB {
 			PS.execute();
 			
 			success = true;
-//			ResultSet RS = PS.executeQuery();
-//			
-//			if (RS.next()) {
-//				//result = RS.getString(1);
-//				success = true;
-//			}
-					
+			
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -122,5 +116,75 @@ public class BankDBImpl implements BankDB {
 		return success;
 	}
 
+	@Override
+	public boolean selectStatus(String user, String pass) {
+		
+		
+		boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+		
+				String query = "SELECT is_customer FROM log_in WHERE username = ? and pass = ? ";
+				
+				PreparedStatement PS = connect.prepareStatement(query);
+				
+				PS.setString(1, user);
+				PS.setString(2, pass);
+								
+				ResultSet RS = PS.executeQuery();
+				
+				while (RS.next()) {
+				
+				if (RS.getBoolean("is_customer") == false) {
+					success = false;
+				} else if (RS.getBoolean("is_customer") == true) {
+					success = true;
+				}
+				}
+						
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return success;
+
+	}
+
+	@Override
+	public boolean checkApproved(String user, String pass) {
+		
+		boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+		
+				String query = "SELECT c_is_approved FROM customer_table WHERE c_username = ? and c_pass = ? ";
+				
+				PreparedStatement PS = connect.prepareStatement(query);
+				
+				PS.setString(1, user);
+				PS.setString(2, pass);
+								
+				ResultSet RS = PS.executeQuery();
+				
+				while (RS.next()) {
+				
+				if (RS.getBoolean("c_is_approved") == false) {
+					success = false;
+				} else if (RS.getBoolean("c_is_approved") == true) {
+					success = true;
+				}
+				}
+						
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return success;
+
+	}
 
 }

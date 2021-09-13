@@ -22,9 +22,21 @@ public class auth_validate implements Security {
 		return database.validate(user, pass);
 	}
 
-	public boolean registerAccount(Items addItem) {
+//	public boolean registerAccount(Items addItem) {
+//		// TODO Auto-generated method stub
+//		return database.insertAccount(addItem);
+//	}
+
+	public boolean checkStatus(String user, String pass) {
 		// TODO Auto-generated method stub
-		return database.insertAccount(addItem);
+		return database.selectStatus(user, pass);
 	}
+
+	public boolean checkApproved(String user, String pass) {
+		// TODO Auto-generated method stub
+		return database.checkApproved(user, pass);
+	}
+
+
 
 }
