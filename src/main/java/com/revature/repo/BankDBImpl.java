@@ -247,4 +247,66 @@ public class BankDBImpl implements BankDB {
 		return success;
 	}
 
+	@Override
+	public boolean deleteARegistration(int id) {
+
+		boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			String query = "DELETE FROM customer_table WHERE c_id = ?";
+			
+			PreparedStatement ps = connect.prepareStatement(query);
+			
+			ps.setInt(1, id);
+		
+			ps.executeUpdate();
+			
+			success = true;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return success;
+
+	}
+
+	
+	@Override
+	public Items[] selectUnRegisteredAccounts() {
+		
+		Items[] allAccounts = new Items[10];
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			String query = "SELECT * FROM customer_table WHERE c_is_approved = ? ORDER BY c_id ASC ";
+			
+			PreparedStatement ps = connect.prepareStatement(query);
+			
+			ps.setBoolean(1, false);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			int i = 0;
+			
+			while (rs.next()) {
+				
+				allAccounts[i] = new Items(rs.getInt("c_id"),
+						rs.getString("c_username"),
+						rs.getBoolean("c_is_approved"));
+				i++;
+				
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+						
+		return allAccounts;
+	}
+
 }

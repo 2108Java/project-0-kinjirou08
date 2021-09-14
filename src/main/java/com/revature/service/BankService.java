@@ -8,6 +8,10 @@ public interface BankService {
 	
 	public Items[] getAccounts();
 	
+	public Items[] getUnRegisteredAccounts();
+	
 	public boolean completeARegistration(int id);
+	
+	public boolean rejectARegistration(int id);
 
 }

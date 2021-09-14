@@ -25,4 +25,14 @@ public class BankServiceImpl implements BankService {
 		return database2.upadteARegistration(id);
 	}
 
+	public boolean rejectARegistration(int id) {
+		// TODO Auto-generated method stub
+		return database2.deleteARegistration(id);
+	}
+
+	public Items[] getUnRegisteredAccounts() {
+		// TODO Auto-generated method stub
+		return database2.selectUnRegisteredAccounts();
+	}
+
 }

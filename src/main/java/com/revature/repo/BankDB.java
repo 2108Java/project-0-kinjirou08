@@ -18,4 +18,8 @@ public interface BankDB {
 
 	public boolean upadteARegistration(int id);
 
+	public boolean deleteARegistration(int id);
+
+	public Items[] selectUnRegisteredAccounts();
+
 }

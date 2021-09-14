@@ -10,7 +10,7 @@ public class Log_In implements Logging_In {
 	
 	auth_validate security;
 	
-	static BankServiceImpl service;	
+	BankServiceImpl service;	
 
 
 	public Log_In(auth_validate security, BankServiceImpl service) {
@@ -19,24 +19,34 @@ public class Log_In implements Logging_In {
 	}
 
 
-	public static void prettyDisplay(Items[] allAccounts) {
+	public static void viewCustomerAccounts(Items[] allAccounts) {
 		
 		for (int i = 0; i < allAccounts.length; i ++) {
 				if (allAccounts[i] != null) {
 					System.out.println("ID: " + allAccounts[i].getId());
-					System.out.println("Username: " + allAccounts[i].getUser());
+					System.out.println("Customer's username: " + allAccounts[i].getUser());
 					
-					if (allAccounts[i].isApproved() == true) {
-						System.out.println("Approved? Yes");
-					}else if ((allAccounts[i].isApproved() == false)) {
-						System.out.println("Approved? No");
-				}
+					
 				System.out.println("");
 				}
 		}
 		
 	}
 	
+	public static void displayUnapprovedRegistration (Items[] allAccounts) {
+		
+		for (int i = 0; i < allAccounts.length; i ++) {
+			if (allAccounts[i] != null) {
+				System.out.println("ID: " + allAccounts[i].getId());
+				System.out.println("Username: " + allAccounts[i].getUser());
+				
+				if ((allAccounts[i].isApproved() == false)) {
+					System.out.println("Approved? No");
+			}
+			System.out.println("");
+			}
+		}
+	}
 	
 	public static void optionMenu() {
 		
@@ -44,7 +54,7 @@ public class Log_In implements Logging_In {
 		System.out.println("2) Log in");
 	}
 	
-	public static void employeeMenu() {
+	public void employeeMenu() {
 		
 		Items[] allAccounts;
 		
@@ -61,9 +71,11 @@ public class Log_In implements Logging_In {
 		
 		switch (option) {
 		case "1":
-			System.out.println("Which customer you want to approve their registration?");
-			allAccounts = service.getAccounts();
-			prettyDisplay(allAccounts);
+			System.out.println("Which customer do you want to approve their registration?");
+			System.out.println("Plese input the ID number");
+			System.out.println("");
+			allAccounts = service.getUnRegisteredAccounts();
+			displayUnapprovedRegistration(allAccounts);
 			
 			int id = Integer.parseInt(sc.nextLine());
 			if (service.completeARegistration(id)) {
@@ -73,11 +85,27 @@ public class Log_In implements Logging_In {
 				System.out.println("");
 			}
 			break;
-					
+		case "2":
+			System.out.println("Which customer do you want to reject their registration?");
+			System.out.println("Plese input the ID number");
+			System.out.println("");
+			allAccounts = service.getUnRegisteredAccounts();
+			displayUnapprovedRegistration(allAccounts);
+			
+			id = Integer.parseInt(sc.nextLine());
+			if (service.rejectARegistration(id)) {
+				System.out.println("Rejection complete, customer has been denied of access.");
+				
+			} else {
+				System.out.println("Not completed, try again! ");
+				System.out.println("");
+			}
+			break;
 		}
 	
 	}
-	public static void customerMenu() {
+	
+	public void customerMenu() {
 		
 		System.out.println("1) Apply for a new bank account");
 		System.out.println("2) Deposit money to (checkings/savings/joint account)");
@@ -100,7 +128,7 @@ public class Log_In implements Logging_In {
 		
 	}
 	
-	public  void registerAccount() {
+	public void registerAccount() {
 		
 		Scanner sc1 = new Scanner(System.in);
 		
