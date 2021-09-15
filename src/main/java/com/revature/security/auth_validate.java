@@ -1,7 +1,8 @@
 package com.revature.security;
 
-import com.revature.models.Items;
 import com.revature.repo.BankDB;
+
+import java.util.Random;
 
 public class auth_validate implements Security {
 	
@@ -37,6 +38,32 @@ public class auth_validate implements Security {
 		return database.checkApproved(user, pass);
 	}
 
+	public String randomBankAccount () {
+		
+		String start = "BA ";
+        Random value = new Random();
 
-
+    //Generate two values to append to 'BE'
+	    int r1 = value.nextInt(6);
+	    int r2 = value.nextInt(6);
+	    start += Integer.toString(r1) + Integer.toString(r2);
+	
+//	    int count = 0;
+	    int n = 0;
+	    for(int i =0; i < 6;i++)
+	    {
+//	        if(count == 4)
+//	        {
+//	            start += " ";
+//	            count =0;
+//	        }
+//	        else 
+	            n = value.nextInt(6);
+	            start += Integer.toString(n);
+//	            count++;
+			
+		}
+	    return start;
+	}
+	
 }

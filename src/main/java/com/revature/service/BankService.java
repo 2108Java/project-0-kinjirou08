@@ -4,7 +4,7 @@ import com.revature.models.Items;
 
 public interface BankService {
 	
-	public boolean registerAccount(Items addItem);
+	public boolean registerLogin(Items addItem);
 	
 	public Items[] getAccounts();
 	
@@ -13,5 +13,9 @@ public interface BankService {
 	public boolean completeARegistration(int id);
 	
 	public boolean rejectARegistration(int id);
+	
+	public Items[] viewACustomerAccount(int id);
+	
+	public boolean newAcct(Items savingsAccount);
 
 }

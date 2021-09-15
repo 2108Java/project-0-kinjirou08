@@ -8,7 +8,7 @@ public interface BankDB {
 
 	public boolean validate(String user, String pass);
 
-	public boolean insertAccount(Items addItem);
+	public boolean insertLogin(Items addItem);
 
 	public boolean selectStatus(String user, String pass);
 
@@ -22,4 +22,8 @@ public interface BankDB {
 
 	public Items[] selectUnRegisteredAccounts();
 
+	public Items[] selectACustomerAccount(int id);
+	
+	public boolean insertNewAccount(Items savingsAccount);
+	
 }

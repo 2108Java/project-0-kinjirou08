@@ -77,7 +77,7 @@ public class BankDBImpl implements BankDB {
 	}
 
 	@Override
-	public boolean insertAccount(Items addItem) {
+	public boolean insertLogin(Items addItem) {
 		
 		boolean success = false;
 		
@@ -309,4 +309,52 @@ public class BankDBImpl implements BankDB {
 		return allAccounts;
 	}
 
+	@Override
+	public Items[] selectACustomerAccount(int id) {
+		
+		Items[] allAccounts = new Items[10];
+		
+		//boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+		
+				String query = "SELECT c_id, c_username, c_checkings, c_savings "
+						+ "FROM customer_table WHERE c_id = ?";
+				
+				PreparedStatement PS = connect.prepareStatement(query);
+				
+				PS.setInt(1, id);
+				
+				ResultSet RS = PS.executeQuery();
+				
+				
+				int i = 0;
+				
+				while (RS.next()) {
+					
+					allAccounts[i] = new Items(RS.getInt("c_id"),
+							RS.getString("c_username"),
+							RS.getString("c_checkings"),
+							RS.getString("c_savings"));
+					i++;
+					
+				}
+				
+						
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+	
+
+	}
+		return allAccounts;
+
+	}
+
+	@Override
+	public boolean insertNewAccount(Items savingsAccount) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

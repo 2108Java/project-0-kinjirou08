@@ -11,8 +11,8 @@ public class BankServiceImpl implements BankService {
 		this.database2 = database;
 	}
 
-	public boolean registerAccount(Items addItem) {		
-		return database2.insertAccount(addItem);
+	public boolean registerLogin(Items addItem) {		
+		return database2.insertLogin(addItem);
 	}
 
 	public Items[] getAccounts() {
@@ -33,6 +33,16 @@ public class BankServiceImpl implements BankService {
 	public Items[] getUnRegisteredAccounts() {
 		// TODO Auto-generated method stub
 		return database2.selectUnRegisteredAccounts();
+	}
+
+	public Items[] viewACustomerAccount(int id) {
+		// TODO Auto-generated method stub
+		return database2.selectACustomerAccount(id);
+	}
+
+	public boolean newAcct(Items savingsAccount) {
+		// TODO Auto-generated method stub
+		return database2.insertNewAccount(savingsAccount);
 	}
 
 }

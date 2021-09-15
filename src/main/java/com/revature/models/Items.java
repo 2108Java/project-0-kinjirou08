@@ -9,7 +9,14 @@ public class Items {
 	private String savings;
 	private String jointAcc;
 	private boolean isApproved;
+	private double amount;
 	
+	public double getAmount() {
+		return amount;
+	}
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
 	public Items() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -41,6 +48,20 @@ public class Items {
 		this.id = id;
 		this.user = user;
 		this.isApproved = isComplete;
+		
+	}
+	public Items(int id, String user, String checkings, String savings) {
+		
+		setId(id);
+		setUser(user);
+		setCheckings(checkings);
+		setSavings(savings);
+		
+	}
+	public Items(String newBankAccount, double amount) {
+
+		setCheckings(newBankAccount);
+		setAmount(amount);
 		
 	}
 	public int getId() {

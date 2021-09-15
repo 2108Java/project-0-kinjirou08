@@ -8,9 +8,9 @@ import com.revature.service.BankServiceImpl;
 
 public class Log_In implements Logging_In {
 	
-	auth_validate security;
+	public auth_validate security;
 	
-	BankServiceImpl service;	
+	public BankServiceImpl service;	
 
 
 	public Log_In(auth_validate security, BankServiceImpl service) {
@@ -33,6 +33,20 @@ public class Log_In implements Logging_In {
 		
 	}
 	
+	public static void viewSpecificCustomerAccounts(Items[] allAccounts) {
+		
+		for (int i = 0; i < allAccounts.length; i ++) {
+				if (allAccounts[i] != null) {
+					System.out.println("ID: " + allAccounts[i].getId());
+					System.out.println("Customer's username: " + allAccounts[i].getUser());
+					System.out.println("Customer's Checkings Account: " + allAccounts[i].getCheckings());
+					System.out.println("Customer's Savings Account: " + allAccounts[i].getSavings());				
+					
+				System.out.println("");
+				}
+		}
+
+	}
 	public static void displayUnapprovedRegistration (Items[] allAccounts) {
 		
 		for (int i = 0; i < allAccounts.length; i ++) {
@@ -101,6 +115,17 @@ public class Log_In implements Logging_In {
 				System.out.println("");
 			}
 			break;
+		case "3":
+			System.out.println("Which customer do you want to view their accounts?");
+			System.out.println("Plese input the ID number");
+			System.out.println("");
+			allAccounts = service.getAccounts();
+			viewCustomerAccounts(allAccounts);
+			
+			id = Integer.parseInt(sc.nextLine());
+			viewSpecificCustomerAccounts(service.viewACustomerAccount(id)); 
+		
+			break;
 		}
 	
 	}
@@ -116,12 +141,26 @@ public class Log_In implements Logging_In {
 		
 		Scanner sc = new Scanner(System.in);
 		String option = "";
+		int choose;
+		double amount;
 		
 		option = sc.nextLine();
 		
 		switch (option) {
 		case "1":
-			System.out.println("Inside case 1");
+			String newBankAccount = security.randomBankAccount();
+			System.out.println("What kind of account would you like to apply,");
+			System.out.println("1) Savings or 2) Checkings?");
+			choose = Integer.parseInt(sc.nextLine());
+				if (choose == 1) {
+					System.out.print("Enter a starting amount: ");
+					amount = Double.parseDouble(sc.nextLine());
+					Items savingsAccount = new Items(newBankAccount,amount);
+						if (service.newAcct(savingsAccount));
+					
+				} else if (choose == 2) {
+					
+				}
 			break;
 		}
 		
@@ -136,17 +175,16 @@ public class Log_In implements Logging_In {
 		
 		String cUser = "";
 		
-		while (checking) {
+			while (checking) {
+				System.out.println("Please enter a username: ");
+				cUser = sc1.nextLine();
 			
-			System.out.println("Please enter a username: ");
-			cUser = sc1.nextLine();
-			
-			if (security.auth(cUser)) {
-				System.out.println("Username already exist, try again!");
-			} else {
-				checking = false;
-			}
-		}			
+				if (security.auth(cUser)) {
+					System.out.println("Username already exist, try again!");
+				} else {
+					checking = false;
+				}
+			}			
 		System.out.println("Please enter a password: ");
 		String cPassword = sc1.nextLine();
 //				
@@ -157,17 +195,20 @@ public class Log_In implements Logging_In {
 //				String savings = sc1.nextLine();
 //				
 		Items addItem = new Items(cUser, cPassword, false);
-				
-		if (service.registerAccount(addItem)) {
-			System.out.println("Account created, please wait for an approval");
-			System.out.println(" from one of our employee. Thank you!");
-			System.out.println("");
-		}
+					
+			if (service.registerLogin(addItem)) {
+				System.out.println("Account created, please wait for an approval");
+				System.out.println(" from one of our employee. Thank you!");
+				System.out.println("");
+			}
+		
+		
 	}
 		
 	public void display() {
 		
-		
+		//System.out.println(security.randomBankAccount());	
+
 		Scanner sc = new Scanner(System.in);
 		boolean result = true;
 		String choose = "";
