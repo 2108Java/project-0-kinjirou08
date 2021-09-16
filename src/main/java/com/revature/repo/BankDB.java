@@ -25,5 +25,7 @@ public interface BankDB {
 	public Items[] selectACustomerAccount(int id);
 	
 	public boolean insertNewAccount(Items savingsAccount);
+
+	public boolean selectExisitingAccount(String newBankAccount);
 	
 }

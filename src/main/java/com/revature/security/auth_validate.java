@@ -1,5 +1,6 @@
 package com.revature.security;
 
+import com.revature.models.Items;
 import com.revature.repo.BankDB;
 
 import java.util.Random;
@@ -64,6 +65,11 @@ public class auth_validate implements Security {
 			
 		}
 	    return start;
+	}
+
+	public boolean checkExisting(String newBankAccount) {
+		// TODO Auto-generated method stub
+		return database.selectExisitingAccount(newBankAccount);
 	}
 	
 }

@@ -4,7 +4,7 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-import org.junit.Assert.*;
+import org.junit.Test.*;
 
 import com.revature.models.Items;
 import com.revature.presentation.Log_In;

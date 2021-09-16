@@ -58,9 +58,10 @@ public class Items {
 		setSavings(savings);
 		
 	}
-	public Items(String newBankAccount, double amount) {
+	public Items(String newBankAccount, String getUser, double amount) {
 
-		setCheckings(newBankAccount);
+		setSavings(newBankAccount);
+		setUser(getUser);
 		setAmount(amount);
 		
 	}

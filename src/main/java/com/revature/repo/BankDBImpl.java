@@ -354,7 +354,68 @@ public class BankDBImpl implements BankDB {
 
 	@Override
 	public boolean insertNewAccount(Items savingsAccount) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		boolean success = false;
+//		System.out.println(savingsAccount.getUser());
+//		System.out.println(savingsAccount.getSavings());
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			
+			String query = "with new_order as (\r\n"
+					+ "  update customer_table set c_savings = ? where c_username = ? \r\n"
+					+ "  returning c_savings\r\n"
+					+ ")\r\n"
+					+ "insert into savings_acct (bank_account, balance)\r\n"
+					+ "values \r\n"
+					+ "((select c_savings from new_order),?)";
+			
+			PreparedStatement PS = connect.prepareStatement(query);
+			
+			PS.setString(1, savingsAccount.getSavings());
+			PS.setString(2, savingsAccount.getUser());
+			PS.setDouble(3, savingsAccount.getAmount());		
+			
+			PS.execute();
+			
+			success = true;
+			
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+		
+		return success;
+	}
+
+	@Override
+	public boolean selectExisitingAccount(String checkBankAccount) {
+		
+		boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			
+			String query = "SELECT c_savings FROM customer_table WHERE c_username = ?";
+			
+			PreparedStatement PS = connect.prepareStatement(query);
+			
+			PS.setString(1, checkBankAccount);
+			
+			ResultSet RS = PS.executeQuery();
+			
+			while (RS.next()) {
+				if (RS.getString("c_savings").equals("No Account yet")) {
+					success = false;
+				} else {
+					success = true;
+				}
+			}
+					
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		return success;
+	}
+	
 }

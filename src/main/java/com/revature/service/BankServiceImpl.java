@@ -41,8 +41,11 @@ public class BankServiceImpl implements BankService {
 	}
 
 	public boolean newAcct(Items savingsAccount) {
-		// TODO Auto-generated method stub
-		return database2.insertNewAccount(savingsAccount);
-	}
+		
+			return database2.insertNewAccount(savingsAccount);
+		}
+
+		
+	
 
 }

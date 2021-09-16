@@ -1,12 +1,12 @@
 package com.revature.presentation;
-
 import java.util.Scanner;
-
 import com.revature.models.Items;
 import com.revature.security.auth_validate;
 import com.revature.service.BankServiceImpl;
 
 public class Log_In implements Logging_In {
+	
+	Scanner sc = new Scanner(System.in);
 	
 	public auth_validate security;
 	
@@ -17,7 +17,6 @@ public class Log_In implements Logging_In {
 		this.security = security;
 		this.service = service;
 	}
-
 
 	public static void viewCustomerAccounts(Items[] allAccounts) {
 		
@@ -47,6 +46,7 @@ public class Log_In implements Logging_In {
 		}
 
 	}
+	
 	public static void displayUnapprovedRegistration (Items[] allAccounts) {
 		
 		for (int i = 0; i < allAccounts.length; i ++) {
@@ -62,13 +62,17 @@ public class Log_In implements Logging_In {
 		}
 	}
 	
+	public static void checkExistingAccount (String user) {
+		
+	}
+	
 	public static void optionMenu() {
 		
 		System.out.println("1) Register for an account");
 		System.out.println("2) Log in");
 	}
 	
-	public void employeeMenu() {
+	public void employeeMenu(String user) {
 		
 		Items[] allAccounts;
 		
@@ -130,7 +134,7 @@ public class Log_In implements Logging_In {
 	
 	}
 	
-	public void customerMenu() {
+	public void customerMenu(String user) {
 		
 		System.out.println("1) Apply for a new bank account");
 		System.out.println("2) Deposit money to (checkings/savings/joint account)");
@@ -139,29 +143,48 @@ public class Log_In implements Logging_In {
 		System.out.println("5) View balance from (checkings/savings/joint account)");
 		System.out.println("");
 		
-		Scanner sc = new Scanner(System.in);
+		//Scanner sc = new Scanner(System.in);
 		String option = "";
 		int choose;
 		double amount;
+		boolean correctAmount = true;
 		
 		option = sc.nextLine();
 		
 		switch (option) {
 		case "1":
 			String newBankAccount = security.randomBankAccount();
+			String getUser = user;
 			System.out.println("What kind of account would you like to apply,");
 			System.out.println("1) Savings or 2) Checkings?");
 			choose = Integer.parseInt(sc.nextLine());
+			while (correctAmount) {
 				if (choose == 1) {
-					System.out.print("Enter a starting amount: ");
-					amount = Double.parseDouble(sc.nextLine());
-					Items savingsAccount = new Items(newBankAccount,amount);
-						if (service.newAcct(savingsAccount));
-					
+					if (security.checkExisting(getUser)) {
+						System.out.println("Already have a savings account!");
+					} else {
+							System.out.print("Enter a starting amount: ");
+							amount = Double.parseDouble(sc.nextLine());
+							if (amount <= 0) {
+						System.out.println("Starting amount cannot be less than 0!");
+					} else {
+						//Items checkBankAccount = new Items(newBankAccount);
+								Items savingsAccount = new Items(newBankAccount,getUser,amount);
+									if (service.newAcct(savingsAccount)) {
+										System.out.println("You've successfully added a new savings account!");
+										correctAmount = false;
+									}
+							}
+					}													
 				} else if (choose == 2) {
+					System.out.print("Enter a starting amount: ");
+					newBankAccount = security.randomBankAccount();
+					amount = Double.parseDouble(sc.nextLine());
+					Items checkingsAccount = new Items(newBankAccount,getUser,amount);
 					
 				}
 			break;
+		}
 		}
 		
 		
@@ -208,8 +231,8 @@ public class Log_In implements Logging_In {
 	public void display() {
 		
 		//System.out.println(security.randomBankAccount());	
-
-		Scanner sc = new Scanner(System.in);
+		
+		
 		boolean result = true;
 		String choose = "";
 		
@@ -242,7 +265,7 @@ public class Log_In implements Logging_In {
 									if (security.checkStatus(user, pass) == false) {
 										System.out.println("Welcome," + user + " what would you like to do today?");
 										System.out.println("");
-										employeeMenu();
+										employeeMenu(user);
 										
 										loopBack = false;
 									}
@@ -250,7 +273,7 @@ public class Log_In implements Logging_In {
 											&& security.checkApproved(user, pass) == true) {
 												System.out.println("Welcome," + user + " what would you like to do today?");
 												System.out.println("");
-												customerMenu();
+												customerMenu(user);
 												
 												loopBack = false;
 												
