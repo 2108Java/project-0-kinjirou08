@@ -3,6 +3,7 @@ package com.revature.security;
 import com.revature.models.Items;
 import com.revature.repo.BankDB;
 
+import java.util.List;
 import java.util.Random;
 
 public class auth_validate implements Security {
@@ -67,9 +68,16 @@ public class auth_validate implements Security {
 	    return start;
 	}
 
-	public boolean checkExisting(String newBankAccount) {
+	public List<Items> checkExisting(String newBankAccount) {
 		// TODO Auto-generated method stub
 		return database.selectExisitingAccount(newBankAccount);
 	}
+
+	public boolean selectExisitingAccounts(String getUser) {
+		// TODO Auto-generated method stub
+		return database.selectExisitingAccounts(getUser);
+	}
+
+	
 	
 }

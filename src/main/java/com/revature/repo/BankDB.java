@@ -1,5 +1,7 @@
 package com.revature.repo;
 
+import java.util.List;
+
 import com.revature.models.Items;
 
 public interface BankDB {
@@ -14,18 +16,21 @@ public interface BankDB {
 
 	public boolean checkApproved(String user, String pass);
 
-	public Items[] selectAllAccounts();
+	public List<Items> selectAllAccounts();
 
 	public boolean upadteARegistration(int id);
 
 	public boolean deleteARegistration(int id);
 
-	public Items[] selectUnRegisteredAccounts();
+	public List<Items> selectUnRegisteredAccounts();
 
-	public Items[] selectACustomerAccount(int id);
+	public List<Items> selectACustomerAccount(int id);
 	
 	public boolean insertNewAccount(Items savingsAccount);
 
-	public boolean selectExisitingAccount(String newBankAccount);
+	public List<Items> selectExisitingAccount(String newBankAccount);
+
+	public boolean selectExisitingAccounts(String getUser);
+
 	
 }

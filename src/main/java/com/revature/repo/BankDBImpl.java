@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.revature.models.Items;
 
@@ -188,9 +190,10 @@ public class BankDBImpl implements BankDB {
 	}
 
 	@Override
-	public Items[] selectAllAccounts() {
+	public List<Items> selectAllAccounts() {
 		
-		Items[] allAccounts = new Items[10];
+		List<Items> allAccounts = new ArrayList<>();
+
 		
 		try (Connection connect = DriverManager.getConnection(url, username, password)) {
 			
@@ -200,14 +203,15 @@ public class BankDBImpl implements BankDB {
 			
 			ResultSet rs = ps.executeQuery();
 			
-			int i = 0;
+			//int i = 0;
 			
 			while (rs.next()) {
 				
-				allAccounts[i] = new Items(rs.getInt("c_id"),
+				allAccounts.add (new Items(rs.getInt("c_id"),
 						rs.getString("c_username"),
-						rs.getBoolean("c_is_approved"));
-				i++;
+						rs.getBoolean("c_is_approved"))
+						);
+				//i++;
 				
 			}
 			
@@ -237,8 +241,8 @@ public class BankDBImpl implements BankDB {
 		
 			ps.executeUpdate();
 			
-			success = true;
-			
+			success = true;	
+		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -272,13 +276,12 @@ public class BankDBImpl implements BankDB {
 		return success;
 
 	}
-
 	
 	@Override
-	public Items[] selectUnRegisteredAccounts() {
+	public List<Items> selectUnRegisteredAccounts() {
 		
-		Items[] allAccounts = new Items[10];
-		
+		List<Items> allAccounts = new ArrayList<>();
+	
 		try (Connection connect = DriverManager.getConnection(url, username, password)) {
 			
 			String query = "SELECT * FROM customer_table WHERE c_is_approved = ? ORDER BY c_id ASC ";
@@ -289,14 +292,14 @@ public class BankDBImpl implements BankDB {
 			
 			ResultSet rs = ps.executeQuery();
 			
-			int i = 0;
-			
 			while (rs.next()) {
 				
-				allAccounts[i] = new Items(rs.getInt("c_id"),
+			
+				allAccounts.add (new Items(rs.getInt("c_id"),
 						rs.getString("c_username"),
-						rs.getBoolean("c_is_approved"));
-				i++;
+						rs.getBoolean("c_is_approved"))
+						);
+			
 				
 			}
 			
@@ -310,10 +313,9 @@ public class BankDBImpl implements BankDB {
 	}
 
 	@Override
-	public Items[] selectACustomerAccount(int id) {
+	public List<Items> selectACustomerAccount(int id) {
 		
-		Items[] allAccounts = new Items[10];
-		
+		List<Items> allAccounts = new ArrayList<>();
 		//boolean success = false;
 		
 		try (Connection connect = DriverManager.getConnection(url, username, password)) {
@@ -329,15 +331,16 @@ public class BankDBImpl implements BankDB {
 				ResultSet RS = PS.executeQuery();
 				
 				
-				int i = 0;
+				//int i = 0;
 				
 				while (RS.next()) {
 					
-					allAccounts[i] = new Items(RS.getInt("c_id"),
+					allAccounts.add( new Items(RS.getInt("c_id"),
 							RS.getString("c_username"),
 							RS.getString("c_checkings"),
-							RS.getString("c_savings"));
-					i++;
+							RS.getString("c_savings"))
+							);
+					//i++;
 					
 				}
 				
@@ -388,34 +391,86 @@ public class BankDBImpl implements BankDB {
 	}
 
 	@Override
-	public boolean selectExisitingAccount(String checkBankAccount) {
+	public List <Items> selectExisitingAccount(String checkBankAccount) {
 		
-		boolean success = false;
+		//boolean success = false;
+		
+		List<Items> getBankAccount = new ArrayList<>();
+		
+		//getBankAccount.get(1).getSavings();
 		
 		try (Connection connect = DriverManager.getConnection(url, username, password)) {
 			
 			
-			String query = "SELECT c_savings FROM customer_table WHERE c_username = ?";
+			String query = "SELECT c_savings, c_checkings FROM customer_table WHERE c_username = ?";
 			
 			PreparedStatement PS = connect.prepareStatement(query);
 			
 			PS.setString(1, checkBankAccount);
 			
 			ResultSet RS = PS.executeQuery();
-			
+					
+		
 			while (RS.next()) {
-				if (RS.getString("c_savings").equals("No Account yet")) {
-					success = false;
-				} else {
-					success = true;
+				
+				//if (RS.getString("c_savings").equals("No Account yet")) {	
+				getBankAccount.add(new Items(
+						RS.getString("c_savings")),
+						RS.getString(("c_checkings"))
+						);
+					//System.out.println(getBankAccount.get(RS.getInt(1)).getSavings());
+					//success = false;
+				//} else {
+					//success = true;
+					//getBankAccount.add(new Items(RS.getString("c_savings")));					
 				}
-			}
+			
 					
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-		return success;
+		return getBankAccount;
 	}
+
+	public boolean selectExisitingAccounts(String user) {
+		
+		boolean success = false;
+		
+		//List<Items> getBankAccount = new ArrayList<>();
+		
+		//getBankAccount.get(1).getSavings();
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			
+			String query = "SELECT c_savings, c_checkings FROM customer_table WHERE c_username = ?";
+			
+			PreparedStatement PS = connect.prepareStatement(query);
+			
+			PS.setString(1, user);
+			
+			ResultSet RS = PS.executeQuery();			
+		
+			while (RS.next()) {
+				
+				if (RS.getString("c_savings").equals("No Account yet")) {	
+					//getBankAccount.add(new Items(RS.getString("c_savings")));
+					//System.out.println(getBankAccount.get(RS.getInt(1)).getSavings());
+					success = false;
+				} else {
+					success = true;
+					//getBankAccount.add(new Items(RS.getString("c_savings")));					
+				}
+			
+			}
+			
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		return success;
 	
+}
+
 }

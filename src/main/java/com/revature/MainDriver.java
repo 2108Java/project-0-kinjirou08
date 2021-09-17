@@ -1,6 +1,6 @@
 package com.revature;
 
-import com.revature.presentation.Log_In;
+import com.revature.presentation.LogIn;
 import com.revature.repo.BankDB;
 import com.revature.repo.BankDBImpl;
 
@@ -17,7 +17,7 @@ public class MainDriver {
 		
 		BankServiceImpl service = new BankServiceImpl(database);
 		
-		Log_In menu = new Log_In(security, service);
+		LogIn menu = new LogIn(security, service);
 		
 		menu.display();
 		

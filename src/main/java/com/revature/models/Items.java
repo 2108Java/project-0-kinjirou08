@@ -31,9 +31,7 @@ public class Items {
 		super();
 		this.user = user;
 	}
-	public Items(String cUser, String cPassword, String checkings2, String savings2, boolean b) {
-		// TODO Auto-generated constructor stub
-	}
+
 	public Items(String user, String password, boolean isApproved) {
 		super();
 		this.user = user;
