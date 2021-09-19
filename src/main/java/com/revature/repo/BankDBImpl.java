@@ -615,5 +615,60 @@ public class BankDBImpl implements BankDB {
 		return success;
 	}
 
+	@Override
+	public boolean selectBankAccount(String bankAccount, String user, int choice) {
+		
+		boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+
+			
+			if (choice == 1) {
+				
+				String query = "SELECT bank_account FROM savings_acct WHERE savings_username = ?";
+
+				PreparedStatement PS = connect.prepareStatement(query);
+
+				PS.setString(1, user);
+
+				ResultSet RS = PS.executeQuery();
+
+				while (RS.next()) {
+					
+					if (RS.getString("bank_account").equals(bankAccount)) {					
+						success = true;
+					} else {
+						success = false;
+					}
+				}
+			} else if (choice == 2) {
+				
+				String query = "SELECT c_checkings FROM checkings_acct WHERE checkings_username = ?";
+
+				PreparedStatement PS = connect.prepareStatement(query);
+
+				PS.setString(1, user);
+
+				ResultSet RS = PS.executeQuery();
+
+				while (RS.next()) {
+					
+					if (RS.getString("bank_account").equals(bankAccount)) {					
+						success = true;
+					} else {
+						success = false;
+					}
+				}
+				
+			}
+					
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		
+		return success;
+	}
+
 	
 }

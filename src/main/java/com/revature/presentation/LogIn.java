@@ -19,7 +19,7 @@ public class LogIn implements Logging_In {
 		this.service = service;
 	}
 
-	public static void viewCustomerAccounts(List<Items> allAccounts) {
+	private static void viewCustomerAccounts(List<Items> allAccounts) {
 		
 		for (int i = 0; i < allAccounts.size(); i ++) {
 				if (allAccounts.get(i) != null) {
@@ -33,7 +33,7 @@ public class LogIn implements Logging_In {
 		
 	}
 	
-	public static void viewSpecificCustomerAccounts(List<Items> allAccounts) {
+	private static void viewSpecificCustomerAccounts(List<Items> allAccounts) {
 		
 		for (int i = 0; i < allAccounts.size(); i ++) {
 				if (allAccounts.get(i) != null) {
@@ -48,7 +48,7 @@ public class LogIn implements Logging_In {
 
 	}
 	
-	public static void displayUnapprovedRegistration (List<Items> allAccounts) {
+	private static void displayUnapprovedRegistration (List<Items> allAccounts) {
 		
 		for (int i = 0; i < allAccounts.size(); i ++) {
 			if (allAccounts.get(i) != null) {
@@ -63,7 +63,7 @@ public class LogIn implements Logging_In {
 		}
 	}
 	
-	public boolean customerOptionOneMenu (int choose, String user, boolean correctAmount) {
+	private boolean customerOptionOneMenu (int choose, String user, boolean correctAmount) {
 		
 		//List <Items> getBankAccount;
 		
@@ -118,7 +118,7 @@ public class LogIn implements Logging_In {
 		
 	}
 	
-	public boolean customerOptionTwoMenu (String user, int choose, boolean correctAmount) {
+	private boolean customerOptionTwoMenu (String user, int choose, boolean correctAmount) {
 	
 	int choice = choose;
 	String getUser = user;
@@ -162,7 +162,7 @@ public class LogIn implements Logging_In {
 		
 	}
 	
-	private boolean customOptionThreeMenu(String user, int choose, boolean correctAmount) {
+	private boolean customerOptionThreeMenu(String user, int choose, boolean correctAmount) {
 		
 		int choice = choose;
 		String getUser = user;
@@ -230,7 +230,24 @@ public class LogIn implements Logging_In {
 		
 		}
 
-
+//	private boolean customerOptionFourMenu (String user, int choose, boolean correctAmount) {
+//	
+//		int choice = choose;
+//		String getUser = user;
+//		double amount = 0;
+//		double getMoney = 0;
+//		double newBalance = 0;
+//		
+//		if (choose == 1) {
+//			System.out.println("How much ");
+//		} else if (choose == 2) {
+//			
+//		}
+//		
+		
+//		return correctAmount;
+//	}
+//	
 	public void employeeMenu(String user) {
 		
 		List<Items> allAccounts;
@@ -241,7 +258,7 @@ public class LogIn implements Logging_In {
 		System.out.println("4) View all transaction");
 		System.out.println("");
 		
-		Scanner sc = new Scanner(System.in);
+		//Scanner sc = new Scanner(System.in);
 		String option = "";
 		
 		option = sc.nextLine();
@@ -304,7 +321,7 @@ public class LogIn implements Logging_In {
 		int choose = 0;
 		boolean correctAmount = true;
 		boolean result = true;
-		//boolean success = true;
+		String bankAccount;
 		
 			
 		do {
@@ -347,11 +364,33 @@ public class LogIn implements Logging_In {
 				System.out.println("1) Savings or 2) Checkings?");
 				choose = Integer.parseInt(sc.nextLine());
 				while (correctAmount) {
-					result = customOptionThreeMenu(getUser, choose, correctAmount);
+					result = customerOptionThreeMenu(getUser, choose, correctAmount);
 					if (result == false) {
 						break;
 					}
 				}
+				break;
+			case "4":
+				System.out.println("Transfer money from: ");
+				System.out.println("1) Savings or 2) Checkings?");
+				choose = Integer.parseInt(sc.nextLine());
+				if (choose == 1) {
+					System.out.println("Please put your Savings account number... (spaces included)");				
+					bankAccount = sc.nextLine();
+						if (security.checkBankAccount(bankAccount, getUser, choose)) {
+							System.out.println("Success!");
+						}
+						
+				} else if (choose == 2) {
+					System.out.println("Transferring money to:");
+					System.out.println("Savings...");
+				}
+//				while (correctAmount) {
+//					result = customerOptionFourMenu(getUser, choose, correctAmount);
+//					if (result == false) {
+//						break;
+//					}
+//				}
 				break;
 			}	
 		if (yn == 'y' || yn == 'Y') {
@@ -369,7 +408,7 @@ public class LogIn implements Logging_In {
 	
 	public void registerAccount() {
 		
-		Scanner sc1 = new Scanner(System.in);
+		//Scanner sc1 = new Scanner(System.in);
 		
 		boolean checking = true;
 		
@@ -377,7 +416,7 @@ public class LogIn implements Logging_In {
 		
 			while (checking) {
 				System.out.println("Please enter a username: ");
-				cUser = sc1.nextLine();
+				cUser = sc.nextLine();
 			
 				if (security.auth(cUser)) {
 					System.out.println("Username already exist, try again!");
@@ -386,7 +425,7 @@ public class LogIn implements Logging_In {
 				}
 			}			
 		System.out.println("Please enter a password: ");
-		String cPassword = sc1.nextLine();
+		String cPassword = sc.nextLine();
 			
 		Items addItem = new Items(cUser, cPassword, false);
 					

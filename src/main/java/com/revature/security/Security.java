@@ -12,4 +12,8 @@ public interface Security {
 	
 	public boolean checkExisting(int choice, String bankAccount);
 	
+	public boolean checkBankAccount(String bankAccount, String user, int choose);
+	
+	
+	
 }

@@ -65,4 +65,10 @@ public class auth_validate implements Security {
 		// TODO Auto-generated method stub
 		return database.selectExisitingAccount(choice, bankAccount);
 	}
+
+	@Override
+	public boolean checkBankAccount(String bankAccount, String user, int choose) {
+		// TODO Auto-generated method stub
+		return database.selectBankAccount(bankAccount, user, choose);
+	}
 }

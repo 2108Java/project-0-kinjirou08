@@ -38,5 +38,7 @@ public interface BankDB {
 
 	public boolean updateBalance(int choice, double newBalance, String getUser);
 
+	public boolean selectBankAccount(String bankAccount, String user, int choose);
+
 	
 }
