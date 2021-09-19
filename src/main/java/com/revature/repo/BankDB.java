@@ -26,11 +26,13 @@ public interface BankDB {
 
 	public List<Items> selectACustomerAccount(int id);
 	
-	public boolean insertNewAccount(Items savingsAccount);
+	public boolean insertNewSavings(Items newBankAccount);
+	
+	public boolean insertNewCheckings(Items newBankAccount);
 
-	public List<Items> selectExisitingAccount(String newBankAccount);
-
-	public boolean selectExisitingAccounts(String getUser);
+	public boolean selectExisitingAccount(String bankAccount);
+	
+	public boolean selectExisitingAccount2(String bankAccount);
 
 	
 }

@@ -9,4 +9,8 @@ public interface Security {
 	public boolean checkStatus(String user, String pass);
 	
 	public boolean checkApproved(String user, String pass);
+	
+	public boolean checkExisting(String newBankAccount);
+	
+	public boolean checkExisting2(String newBankAccount);
 }

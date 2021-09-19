@@ -20,4 +20,5 @@ public interface BankService {
 	
 	public boolean newAcct(Items savingsAccount);
 
+	public boolean newAcct2(Items checkingsAccount);
 }

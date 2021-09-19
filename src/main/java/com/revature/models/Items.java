@@ -63,6 +63,14 @@ public class Items {
 		setAmount(amount);
 		
 	}
+	
+public Items(String getUser, double amount, String newBankAccount) {
+		
+		setCheckings(newBankAccount);
+		setUser(getUser);
+		setAmount(amount);
+		
+	}
 	public int getId() {
 		return id;
 	}

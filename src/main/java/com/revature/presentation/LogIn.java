@@ -66,18 +66,21 @@ public class LogIn implements Logging_In {
 	
 	public void customerOptionOneMenu (int choose, String user, boolean correctAmount) {
 		
-		List <Items> getBankAccount;
+		//List <Items> getBankAccount;
 		
-		String newBankAccount = security.randomBankAccount();
+		String newBankAccount;
 		String getUser = user;
 		double amount;
 		
 		
 		
-		if (choose == 1) {			
-			if (security.selectExisitingAccounts(getUser)) {
+		if (choose == 1) {	
+			newBankAccount = security.randomBankAccount();
+			System.out.println(newBankAccount);
+			if (security.checkExisting(getUser)) {
 				System.out.println("Already have a savings account!");
 			} else {
+				System.out.println(security.checkExisting(getUser));
 					System.out.print("Enter a starting amount: ");
 					amount = Double.parseDouble(sc.nextLine());
 					if (amount <= 0) {
@@ -92,7 +95,9 @@ public class LogIn implements Logging_In {
 					}
 			}													
 		} else if (choose == 2) {
-				if (security.selectExisitingAccounts(getUser)) {
+				newBankAccount = security.randomBankAccount();
+				System.out.println(newBankAccount);
+				if (security.checkExisting2(getUser)) {
 				System.out.println("Already have a checkings account!");
 			} else {
 					System.out.print("Enter a starting amount: ");
@@ -101,8 +106,8 @@ public class LogIn implements Logging_In {
 						System.out.println("Starting amount cannot be less than 0!");
 					} else {
 				//Items checkBankAccount = new Items(newBankAccount);
-						Items checkingsAccount = new Items(newBankAccount,getUser,amount);
-							if (service.newAcct(checkingsAccount)) {
+						Items checkingsAccount = new Items (getUser,amount,newBankAccount);
+							if (service.newAcct2(checkingsAccount)) {
 								System.out.println("You've successfully added a new checkings account!");
 								correctAmount = false;
 							}

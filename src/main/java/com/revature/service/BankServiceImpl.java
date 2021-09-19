@@ -42,12 +42,15 @@ public class BankServiceImpl implements BankService {
 		return database2.selectACustomerAccount(id);
 	}
 
-	public boolean newAcct(Items savingsAccount) {
+	public boolean newAcct(Items newBankAccount) {
 		
-		return database2.insertNewAccount(savingsAccount);
-		}
+		return database2.insertNewSavings(newBankAccount);
+	}
 
+	public boolean newAcct2(Items newBankAccount) {
 		
+		return database2.insertNewCheckings(newBankAccount);
+	}	
 	
 
 }

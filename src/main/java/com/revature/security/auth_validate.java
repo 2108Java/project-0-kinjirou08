@@ -68,16 +68,13 @@ public class auth_validate implements Security {
 	    return start;
 	}
 
-	public List<Items> checkExisting(String newBankAccount) {
+	public boolean checkExisting(String bankAccount) {
 		// TODO Auto-generated method stub
-		return database.selectExisitingAccount(newBankAccount);
+		return database.selectExisitingAccount(bankAccount);
 	}
-
-	public boolean selectExisitingAccounts(String getUser) {
+	
+	public boolean checkExisting2(String bankAccount) {
 		// TODO Auto-generated method stub
-		return database.selectExisitingAccounts(getUser);
+		return database.selectExisitingAccount2(bankAccount);
 	}
-
-	
-	
 }
