@@ -25,4 +25,6 @@ public interface BankService {
 	public double getMoney(int choice, String getUser);
 	
 	public boolean addMoney(int choice, double newBalance, String getUser);
+	
+	public boolean deductMoney(int choice, double newBalance, String getUser);
 }

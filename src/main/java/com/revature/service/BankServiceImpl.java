@@ -62,6 +62,11 @@ public class BankServiceImpl implements BankService {
 		return database2.updateMoney(choice, newBalance, getUser);
 	}
 
+	public boolean deductMoney(int choice, double newBalance, String getUser) {
+		// TODO Auto-generated method stub
+		return database2.updateBalance(choice, newBalance, getUser);
+	}
+
 	
 
 }

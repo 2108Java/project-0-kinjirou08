@@ -571,5 +571,49 @@ public class BankDBImpl implements BankDB {
 		return success;
 	}
 
+	@Override
+	public boolean updateBalance(int choice, double newBalance, String getUser) {
+		
+		boolean success = false;
+		int choose = choice;
+			
+			try (Connection connect = DriverManager.getConnection(url, username, password)) {
+				
+				if (choose == 1) {
+					
+					String query = "UPDATE savings_acct SET balance = ? WHERE savings_username = ?;";
+					
+					PreparedStatement ps = connect.prepareStatement(query);
+					
+					ps.setDouble(1, newBalance);
+					ps.setString(2, getUser);
+					
+					ps.executeUpdate();
+					
+					success = true;
+					
+				} else if (choose == 2) {
+					
+					String query = "UPDATE checkings_acct SET balance = ? WHERE checkings_username = ?;";
+					
+					PreparedStatement ps = connect.prepareStatement(query);
+					
+					ps.setDouble(1, newBalance);
+					ps.setString(2, getUser);
+					
+					ps.executeUpdate();
+					
+					success = true;
+				}					
+					
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		return success;
+	}
+
 	
 }

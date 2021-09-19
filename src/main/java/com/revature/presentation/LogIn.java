@@ -118,7 +118,7 @@ public class LogIn implements Logging_In {
 		
 	}
 	
-	public boolean customeroptionTwoMenu (String user, int choose, boolean success) {
+	public boolean customerOptionTwoMenu (String user, int choose, boolean correctAmount) {
 	
 	int choice = choose;
 	String getUser = user;
@@ -138,7 +138,7 @@ public class LogIn implements Logging_In {
 		newBalance = getMoney + amount;
 		if (service.addMoney(choice,newBalance,getUser)) {
 		System.out.println("Successfully deposited the money!");
-		success = false;
+		correctAmount = false;
 		}
 		}
 				
@@ -154,13 +154,82 @@ public class LogIn implements Logging_In {
 		newBalance = getMoney + amount;
 		if (service.addMoney(choice,newBalance,getUser)) {
 		System.out.println("Successfully deposited the money!");
-		success = false;
+		correctAmount = false;
 	}
 		}
 	}
-	return success;
+	return correctAmount;
 		
 	}
+	
+	private boolean customOptionThreeMenu(String user, int choose, boolean correctAmount) {
+		
+		int choice = choose;
+		String getUser = user;
+		double amount = 0;
+		double getMoney = 0;
+		double newBalance = 0;
+		
+		if (choose == 1) {
+			getMoney = service.getMoney(choice, getUser);
+			System.out.println("Current Balance: "+getMoney);
+				try {
+					System.out.println("How much would you like to withdraw from your savings account?");
+					amount = Double.parseDouble(sc.nextLine());
+					newBalance = getMoney - amount;
+					if (newBalance < 0 ) {
+						System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
+						System.out.println("");
+					} else {
+						if (amount < 0 ) {
+							System.out.println("You've inputed wrong amount!");
+							System.out.println("");
+						} else {
+							if (service.deductMoney(choice,newBalance,getUser)) {
+								System.out.println("You've withdrawn: " +amount);
+								System.out.println("Current Balance: "+newBalance);
+								System.out.println("Successfully withdrawn money!");
+								correctAmount = false;
+							}
+						}
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid input! Please only input numbers");
+					System.out.println("");
+				}		
+								
+		} else if (choose == 2) {
+			getMoney = service.getMoney(choice, getUser);
+			System.out.println("Current Balance: "+getMoney);
+				try {
+					System.out.println("How much would you like to withdraw from your checkings account?");
+					amount = Double.parseDouble(sc.nextLine());
+					newBalance = getMoney - amount;
+					if (newBalance < 0 ) {
+						System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
+						System.out.println("");
+					} else {
+						if (amount < 0 ) {
+							System.out.println("You've inputed wrong amount!");
+							System.out.println("");
+						} else {
+							if (service.deductMoney(choice,newBalance,getUser)) {
+								System.out.println("You've withdrawn: " +amount);
+								System.out.println("Current Balance: "+newBalance);
+								System.out.println("Successfully withdrawn money!");
+								correctAmount = false;
+							}
+						}
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid input! Please only input numbers");
+					System.out.println("");
+				}	
+			}
+		return correctAmount;
+		
+		}
+
 
 	public void employeeMenu(String user) {
 		
@@ -235,7 +304,7 @@ public class LogIn implements Logging_In {
 		int choose = 0;
 		boolean correctAmount = true;
 		boolean result = true;
-		boolean success = true;
+		//boolean success = true;
 		
 			
 		do {
@@ -257,7 +326,7 @@ public class LogIn implements Logging_In {
 				choose = Integer.parseInt(sc.nextLine());				
 				while (correctAmount) {
 					result = customerOptionOneMenu(choose, getUser, correctAmount);
-					if (result == false ) {
+					if (result == false) {
 						break;
 					}
 				}
@@ -266,8 +335,24 @@ public class LogIn implements Logging_In {
 				System.out.println("Where would you like to deposit your money?");
 				System.out.println("1) Savings or 2) Checkings?");
 				choose = Integer.parseInt(sc.nextLine());
-				customeroptionTwoMenu(getUser, choose, success);
-			break;	
+				while (correctAmount) {
+					result = customerOptionTwoMenu(getUser, choose, correctAmount);
+					if (result == false) {
+						break;
+					}
+				}			
+			break;
+			case "3":
+				System.out.println("Where would you like to withdraw your money?");
+				System.out.println("1) Savings or 2) Checkings?");
+				choose = Integer.parseInt(sc.nextLine());
+				while (correctAmount) {
+					result = customOptionThreeMenu(getUser, choose, correctAmount);
+					if (result == false) {
+						break;
+					}
+				}
+				break;
 			}	
 		if (yn == 'y' || yn == 'Y') {
 			System.out.print("(Y/N) Is there anything else you need to do?: ");
