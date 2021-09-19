@@ -21,4 +21,8 @@ public interface BankService {
 	public boolean newAcct(Items savingsAccount);
 
 	public boolean newAcct2(Items checkingsAccount);
+	
+	public double getMoney(int choice, String getUser);
+	
+	public boolean addMoney(int choice, double newBalance, String getUser);
 }

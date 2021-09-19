@@ -50,7 +50,18 @@ public class BankServiceImpl implements BankService {
 	public boolean newAcct2(Items newBankAccount) {
 		
 		return database2.insertNewCheckings(newBankAccount);
-	}	
+	}
+
+	public double getMoney(int choice, String getUser) {
+		// TODO Auto-generated method stub
+		return database2.selectCurrentBalance(choice, getUser);
+	}
+
+	public boolean addMoney(int choice, double newBalance, String getUser) {
+		// TODO Auto-generated method stub
+		return database2.updateMoney(choice, newBalance, getUser);
+	}
+
 	
 
 }

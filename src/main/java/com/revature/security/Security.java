@@ -10,7 +10,6 @@ public interface Security {
 	
 	public boolean checkApproved(String user, String pass);
 	
-	public boolean checkExisting(String newBankAccount);
+	public boolean checkExisting(int choice, String bankAccount);
 	
-	public boolean checkExisting2(String newBankAccount);
 }

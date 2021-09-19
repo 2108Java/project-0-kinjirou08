@@ -1,5 +1,4 @@
 package com.revature.presentation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import com.revature.models.Items;
@@ -64,29 +63,29 @@ public class LogIn implements Logging_In {
 		}
 	}
 	
-	public void customerOptionOneMenu (int choose, String user, boolean correctAmount) {
+	public boolean customerOptionOneMenu (int choose, String user, boolean correctAmount) {
 		
 		//List <Items> getBankAccount;
 		
 		String newBankAccount;
 		String getUser = user;
 		double amount;
-		
+		int choice = choose;
 		
 		
 		if (choose == 1) {	
 			newBankAccount = security.randomBankAccount();
-			System.out.println(newBankAccount);
-			if (security.checkExisting(getUser)) {
+			//System.out.println(newBankAccount);
+			if (security.checkExisting(choice, getUser)) {
 				System.out.println("Already have a savings account!");
+				correctAmount = false;
 			} else {
-				System.out.println(security.checkExisting(getUser));
-					System.out.print("Enter a starting amount: ");
-					amount = Double.parseDouble(sc.nextLine());
+				//System.out.println(security.checkExisting(choice, getUser));
+				System.out.print("Enter a starting amount: ");
+				amount = Double.parseDouble(sc.nextLine());
 					if (amount <= 0) {
-				System.out.println("Starting amount cannot be less than 0!");
+						System.out.println("Starting amount cannot be less than 0!");
 					} else {
-				//Items checkBankAccount = new Items(newBankAccount);
 						Items savingsAccount = new Items(newBankAccount,getUser,amount);
 							if (service.newAcct(savingsAccount)) {
 								System.out.println("You've successfully added a new savings account!");
@@ -96,16 +95,16 @@ public class LogIn implements Logging_In {
 			}													
 		} else if (choose == 2) {
 				newBankAccount = security.randomBankAccount();
-				System.out.println(newBankAccount);
-				if (security.checkExisting2(getUser)) {
+				//System.out.println(newBankAccount);
+				if (security.checkExisting(choice, getUser)) {
 				System.out.println("Already have a checkings account!");
+				correctAmount = false;
 			} else {
 					System.out.print("Enter a starting amount: ");
 					amount = Double.parseDouble(sc.nextLine());
 					if (amount <= 0) {
 						System.out.println("Starting amount cannot be less than 0!");
-					} else {
-				//Items checkBankAccount = new Items(newBankAccount);
+					} else {				
 						Items checkingsAccount = new Items (getUser,amount,newBankAccount);
 							if (service.newAcct2(checkingsAccount)) {
 								System.out.println("You've successfully added a new checkings account!");
@@ -115,16 +114,54 @@ public class LogIn implements Logging_In {
 			}
 				
 		}
+		return correctAmount;
 		
 	}
 	
-	public static void optionMenu() {
-		
-		System.out.println("1) Register for an account");
-		System.out.println("2) Log in");
+	public boolean customeroptionTwoMenu (String user, int choose, boolean success) {
 	
+	int choice = choose;
+	String getUser = user;
+	double amount = 0;
+	double getMoney = 0;
+	double newBalance = 0;
+	
+	if (choose == 1) {
+		getMoney = service.getMoney(choice, getUser);
+		System.out.println(getMoney);
+		System.out.println("How much would you like to deposit to your savings account?");
+		amount = Double.parseDouble(sc.nextLine());
+		if (amount < 0) {
+			System.out.println("You've inputed wrong amount!");
+			//System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
+		} else {
+		newBalance = getMoney + amount;
+		if (service.addMoney(choice,newBalance,getUser)) {
+		System.out.println("Successfully deposited the money!");
+		success = false;
+		}
+		}
+				
+	} else if (choose == 2) {
+		getMoney = service.getMoney(choice, getUser);
+		System.out.println(getMoney);
+		System.out.println("How much would you like to deposit to your checkings account?");
+		amount = Double.parseDouble(sc.nextLine());
+		if (amount < 0) {
+			System.out.println("You've inputed wrong amount!");
+			//System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
+		} else {
+		newBalance = getMoney + amount;
+		if (service.addMoney(choice,newBalance,getUser)) {
+		System.out.println("Successfully deposited the money!");
+		success = false;
 	}
-	
+		}
+	}
+	return success;
+		
+	}
+
 	public void employeeMenu(String user) {
 		
 		List<Items> allAccounts;
@@ -193,34 +230,55 @@ public class LogIn implements Logging_In {
 	
 	public void customerMenu(String user) {
 		
-		System.out.println("1) Apply for a new bank account");
-		System.out.println("2) Deposit money to (checkings/savings/joint account)");
-		System.out.println("3) Withdraw money from (checkings/savings/joint account) ");
-		System.out.println("4) Transfer money to (checkings/savings/joint account)");
-		System.out.println("5) View balance from (checkings/savings/joint account)");
-		System.out.println("");
-		
-		//Scanner sc = new Scanner(System.in);
-		String option = "";
-		int choose;
-		
+		char yn = 'y';
+		String getUser = user;
+		int choose = 0;
 		boolean correctAmount = true;
+		boolean result = true;
+		boolean success = true;
 		
-		option = sc.nextLine();
-		
-		switch (option) {
-		case "1":
-			String getUser = user;
 			
-			System.out.println("What kind of account would you like to apply,");
-			System.out.println("1) Savings or 2) Checkings?");
-			choose = Integer.parseInt(sc.nextLine());
-			while (correctAmount) {
-				customerOptionOneMenu(choose, getUser, correctAmount);					
-			break;
-			}
-		}
-		
+		do {
+			System.out.println("1) Apply for a new bank account");
+			System.out.println("2) Deposit money to (checkings/savings/joint account)");
+			System.out.println("3) Withdraw money from (checkings/savings/joint account) ");
+			System.out.println("4) Transfer money to (checkings/savings/joint account)");
+			System.out.println("5) View balance from (checkings/savings/joint account)");
+			System.out.println("");
+			
+			String option = "";
+			option = sc.nextLine();
+				
+			switch (option) {
+			case "1":
+								
+				System.out.println("What kind of account would you like to apply,");
+				System.out.println("1) Savings or 2) Checkings?");
+				choose = Integer.parseInt(sc.nextLine());				
+				while (correctAmount) {
+					result = customerOptionOneMenu(choose, getUser, correctAmount);
+					if (result == false ) {
+						break;
+					}
+				}
+				break;				
+			case "2":
+				System.out.println("Where would you like to deposit your money?");
+				System.out.println("1) Savings or 2) Checkings?");
+				choose = Integer.parseInt(sc.nextLine());
+				customeroptionTwoMenu(getUser, choose, success);
+			break;	
+			}	
+		if (yn == 'y' || yn == 'Y') {
+			System.out.print("(Y/N) Is there anything else you need to do?: ");
+			yn = sc.next().charAt(0);
+			System.out.println("");
+			sc.nextLine();
+			//System.out.println("What would you like to do?");
+		} 
+				
+		} while (yn == 'y' || yn == 'Y'); 		
+			System.out.println("Thankie!");			
 		
 	}
 	
@@ -254,6 +312,13 @@ public class LogIn implements Logging_In {
 			}
 		
 		
+	}
+
+	public static void optionMenu() {
+		
+		System.out.println("1) Register for an account");
+		System.out.println("2) Log in");
+	
 	}
 
 	public void optionLogin () {

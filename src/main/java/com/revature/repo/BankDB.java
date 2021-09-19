@@ -30,9 +30,11 @@ public interface BankDB {
 	
 	public boolean insertNewCheckings(Items newBankAccount);
 
-	public boolean selectExisitingAccount(String bankAccount);
-	
-	public boolean selectExisitingAccount2(String bankAccount);
+	public boolean selectExisitingAccount(int choice, String bankAccount);
+
+	boolean updateMoney(int choice, double newBalance, String getUser);
+
+	public double selectCurrentBalance(int choice, String getUser);
 
 	
 }

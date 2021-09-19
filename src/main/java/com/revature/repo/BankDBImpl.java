@@ -366,11 +366,12 @@ public class BankDBImpl implements BankDB {
 			
 			String query = "with new_order as (\r\n"
 					+ "  update customer_table set c_savings = ? where c_username = ? \r\n"
-					+ "  returning c_savings\r\n"
+					+ "  returning c_savings, c_username\r\n"
 					+ ")\r\n"
-					+ "insert into savings_acct (bank_account, balance)\r\n"
+					+ "insert into savings_acct (savings_username, bank_account, balance)\r\n"
 					+ "values \r\n"
-					+ "((select c_savings from new_order),?)";
+					+ "((select c_username from new_order),\r\n"
+					+ "(select c_savings from new_order), ?);";
 			
 			PreparedStatement PS = connect.prepareStatement(query);
 			
@@ -399,11 +400,13 @@ public class BankDBImpl implements BankDB {
 			
 			String query = "with new_order as (\r\n"
 					+ "  update customer_table set c_checkings = ? where c_username = ? \r\n"
-					+ "  returning c_checkings\r\n"
+					+ "  returning c_checkings, c_username\r\n"
 					+ ")\r\n"
-					+ "insert into checkings_acct (bank_account, balance)\r\n"
+					+ "insert into checkings_acct (checkings_username, bank_account, balance)\r\n"
 					+ "values \r\n"
-					+ "((select c_checkings from new_order),?);";
+					+ "((select c_username from new_order),\r\n"
+					+ "(select c_checkings from new_order), ?);\r\n"
+					+ "";
 			
 			PreparedStatement PS = connect.prepareStatement(query);
 			
@@ -424,31 +427,54 @@ public class BankDBImpl implements BankDB {
 	}
 
 	@Override
-	public boolean selectExisitingAccount(String bankAccount) {
+	public boolean selectExisitingAccount(int choice, String bankAccount) {
 		
 		boolean success = false;
+		
+		int choose = choice;
 
 		try (Connection connect = DriverManager.getConnection(url, username, password)) {
 
-
-			String query = "SELECT c_savings FROM customer_table WHERE c_username = ?";
-
-			PreparedStatement PS = connect.prepareStatement(query);
-
-			PS.setString(1, bankAccount);
-
-			ResultSet RS = PS.executeQuery();
-
-			while (RS.next()) {
+			
+			if (choose == 1 ) {
 				
-				if (RS.getString("c_savings").equals("No Account yet")) {					
-					success = false;
-				} else {
-					success = true;
-				}
-			}
-						
+				String query = "SELECT c_savings FROM customer_table WHERE c_username = ?";
 
+				PreparedStatement PS = connect.prepareStatement(query);
+
+				PS.setString(1, bankAccount);
+
+				ResultSet RS = PS.executeQuery();
+
+				while (RS.next()) {
+					
+					if (RS.getString("c_savings").equals("No Account yet")) {					
+						success = false;
+					} else {
+						success = true;
+					}
+				}
+			} else if (choose == 2) {
+				
+				String query = "SELECT c_checkings FROM customer_table WHERE c_username = ?";
+
+				PreparedStatement PS = connect.prepareStatement(query);
+
+				PS.setString(1, bankAccount);
+
+				ResultSet RS = PS.executeQuery();
+
+				while (RS.next()) {
+					
+					if (RS.getString("c_checkings").equals("No Account yet")) {					
+						success = false;
+					} else {
+						success = true;
+					}
+				}
+				
+			}
+					
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -457,38 +483,93 @@ public class BankDBImpl implements BankDB {
 	}
 
 	@Override
-	public boolean selectExisitingAccount2(String bankAccount) {
+	public double selectCurrentBalance(int choice, String getUser) {
+
+		double currentBalance = 0;
+		int choose = choice;
 		
-		boolean success = false;
-
-		try (Connection connect = DriverManager.getConnection(url, username, password)) {
-
-
-			String query = "SELECT c_checkings FROM customer_table WHERE c_username = ?";
-
-			PreparedStatement PS = connect.prepareStatement(query);
-
-			PS.setString(1, bankAccount);
-
-			ResultSet RS = PS.executeQuery();
-
-			while (RS.next()) {
+			try (Connection connect = DriverManager.getConnection(url, username, password)) {
 				
-				if (RS.getString("c_checkings").equals("No Account yet")) {					
-					success = false;
-				} else {
-					success = true;
+				if (choose == 1) {
+					
+					String query = "SELECT balance from savings_acct WHERE savings_username = ?;";
+					
+					PreparedStatement PS = connect.prepareStatement(query);
+		
+					PS.setString(1, getUser);
+		
+					ResultSet RS = PS.executeQuery();
+				
+					while (RS.next()) {
+						currentBalance = RS.getDouble("balance");
+					}
+					
+				} else if (choose == 2) {
+					
+					String query = "SELECT balance from checkings_acct WHERE checkings_username = ?;";
+					
+					PreparedStatement PS = connect.prepareStatement(query);
+		
+					PS.setString(1, getUser);
+		
+					ResultSet RS = PS.executeQuery();
+				
+					while (RS.next()) {
+						currentBalance = RS.getDouble("balance");
+					}
 				}
-			}
-						
-
+				
+		
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+			return currentBalance;
+}
+
+	@Override
+	public boolean updateMoney(int choice, double newBalance, String getUser) {
+		
+		boolean success = false;
+		int choose = choice;
+			
+			try (Connection connect = DriverManager.getConnection(url, username, password)) {
+				
+				if (choose == 1) {
+					
+					String query = "UPDATE savings_acct SET balance = ? WHERE savings_username = ?;";
+					
+					PreparedStatement ps = connect.prepareStatement(query);
+					
+					ps.setDouble(1, newBalance);
+					ps.setString(2, getUser);
+					
+					ps.executeUpdate();
+					
+					success = true;
+					
+				} else if (choose == 2) {
+					
+					String query = "UPDATE checkings_acct SET balance = ? WHERE checkings_username = ?;";
+					
+					PreparedStatement ps = connect.prepareStatement(query);
+					
+					ps.setDouble(1, newBalance);
+					ps.setString(2, getUser);
+					
+					ps.executeUpdate();
+					
+					success = true;
+				}					
+					
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 		return success;
 	}
+
 	
-
-
 }
