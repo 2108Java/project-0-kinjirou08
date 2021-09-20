@@ -527,8 +527,52 @@ public class BankDBImpl implements BankDB {
 			return currentBalance;
 }
 
+	public double selectTransferBalance(int choice, String transferUser) {
+		
+		double currentBalance = 0;
+		int choose = choice;
+		
+			try (Connection connect = DriverManager.getConnection(url, username, password)) {
+				
+				if (choose == 1) {
+					
+					String query = "SELECT balance from checkings_acct WHERE bank_account = ?;";
+					
+					PreparedStatement PS = connect.prepareStatement(query);
+		
+					PS.setString(1, transferUser);
+		
+					ResultSet RS = PS.executeQuery();
+				
+					while (RS.next()) {
+						currentBalance = RS.getDouble("balance");
+					}
+					
+				} else if (choose == 2) {
+					
+					String query = "SELECT balance from savings_acct WHERE bank_account = ?;";
+					
+					PreparedStatement PS = connect.prepareStatement(query);
+		
+					PS.setString(1, transferUser);
+		
+					ResultSet RS = PS.executeQuery();
+				
+					while (RS.next()) {
+						currentBalance = RS.getDouble("balance");
+					}
+				}
+				
+		
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+			return currentBalance;
+	}
+	
 	@Override
-	public boolean updateMoney(int choice, double newBalance, String getUser) {
+	public boolean updateMoney(int choice, double newBalance, String getUser) { //add money
 		
 		boolean success = false;
 		int choose = choice;
@@ -572,7 +616,7 @@ public class BankDBImpl implements BankDB {
 	}
 
 	@Override
-	public boolean updateBalance(int choice, double newBalance, String getUser) {
+	public boolean updateBalance(int choice, double newBalance, String getUser) { // deduct money
 		
 		boolean success = false;
 		int choose = choice;
@@ -645,7 +689,7 @@ public class BankDBImpl implements BankDB {
 				}
 			} else if (choose == 2) {
 				
-				String query = "SELECT c_checkings FROM checkings_acct WHERE checkings_username = ?";
+				String query = "SELECT bank_account FROM checkings_acct WHERE checkings_username = ?";
 
 				PreparedStatement PS = connect.prepareStatement(query);
 
@@ -693,7 +737,7 @@ public class BankDBImpl implements BankDB {
 						success = true;						
 					} else {
 						 success = false;
-						 rs.close();
+						 //rs.close();
 						 //connect.close();
 					}				
 				}
@@ -724,5 +768,51 @@ public class BankDBImpl implements BankDB {
 		return success;
 	}
 
+	public boolean updateTransferMoney (int choice, double newBalance, String transferUser) {
+		
+		boolean success = false;
+		int choose = choice;
+			
+			try (Connection connect = DriverManager.getConnection(url, username, password)) {
+				
+				if (choose == 1) {
+					
+					String query = "UPDATE checkings_acct SET balance = ? WHERE bank_account = ?;";
+					
+					PreparedStatement ps = connect.prepareStatement(query);
+					
+					ps.setDouble(1, newBalance);
+					ps.setString(2, transferUser);
+					
+					ps.executeUpdate();
+					
+					success = true;
+					
+				} else if (choose == 2) {
+					
+					String query = "UPDATE savings_acct SET balance = ? WHERE bank_account = ?;";
+					
+					PreparedStatement ps = connect.prepareStatement(query);
+					
+					ps.setDouble(1, newBalance);
+					ps.setString(2, transferUser);
+					
+					ps.executeUpdate();
+					
+					success = true;
+				}					
+					
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		return success;
+		
+	}
+
+
+	
 	
 }

@@ -238,15 +238,19 @@ public class LogIn implements Logging_In {
 		double amount = 0;
 		double getMoney = 0;
 		double newBalance = 0;
+		double getTransferMoney = 0;
 		String transferUser;
 		
 		if (choose == 1) {
 			getMoney = service.getMoney(choice, getUser);
-			System.out.println("Current Balance: "+getMoney);
+			System.out.println("Current Balance (Savings): "+getMoney);
+			System.out.println(getUser);
+			
 				try {
 					System.out.println("How much would you like to transfer from your savings account?");
 					amount = Double.parseDouble(sc.nextLine());
 					newBalance = getMoney - amount;
+					System.out.println(newBalance);
 					if (newBalance < 0 ) {
 						System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
 						System.out.println("");
@@ -259,20 +263,56 @@ public class LogIn implements Logging_In {
 							System.out.print(" your money to be transfered (space included)... ");
 							transferUser = sc.nextLine();
 								System.out.println(transferUser);
+								getTransferMoney = service.getTransferMoney(choice, transferUser);
+								System.out.println("Current Balance (Checkings): "+getTransferMoney);
 								System.out.println(security.checkAccount(transferUser)); 
-								if (security.checkAccount(transferUser)) { // 
-									
-//									
+								if (security.checkAccount(transferUser)) {  
+									service.deductMoney(choice,newBalance,getUser);
+									System.out.println("Current Balance in Savings: "+service.getMoney(choice,getUser));
+									newBalance = getTransferMoney + amount;
+									service.transferMoney(choice, newBalance, transferUser);
+									System.out.println("New Balance in Checkings: " +service.getTransferMoney(choice, transferUser));											
 								}
+
+						}
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid input! Please only input numbers");
+					System.out.println("");
+				}
+		} else if (choose == 2) {
+			getMoney = service.getMoney(choice, getUser);
+			System.out.println("Current Balance (Checkings): "+getMoney);
+			System.out.println(getUser);
+			
+				try {
+					System.out.println("How much would you like to transfer from your checkings account?");
+					amount = Double.parseDouble(sc.nextLine());
+					newBalance = getMoney - amount;
+					System.out.println(newBalance);
+					if (newBalance < 0 ) {
+						System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
+						System.out.println("");
+					} else {
+						if (amount < 0 ) {
+							System.out.println("You've inputed wrong amount!");
+							System.out.println("");
+						} else {
+							System.out.println("Please put the bank account number that you want");
+							System.out.print(" your money to be transfered (space included)... ");
+							transferUser = sc.nextLine();
 								System.out.println(transferUser);
-								
-								
-//							if (service.deductMoney(choice,newBalance,getUser)) {
-//								System.out.println("You've withdrawn: " +amount);
-//								System.out.println("Current Balance: "+newBalance);
-//								System.out.println("Successfully withdrawn money!");
-//								correctAmount = false;
-//							}
+								getTransferMoney = service.getTransferMoney(choice, transferUser);
+								System.out.println("Current Balance (Checkings): "+getTransferMoney);
+								System.out.println(security.checkAccount(transferUser)); 
+								if (security.checkAccount(transferUser)) {  
+									service.deductMoney(choice,newBalance,getUser);
+									System.out.println("Current Balance in Checkings: "+service.getMoney(choice,getUser));
+									newBalance = getTransferMoney + amount;
+									service.transferMoney(choice, newBalance, transferUser);
+									System.out.println("New Balance in Savings: " +service.getTransferMoney(choice, transferUser));											
+								}
+
 						}
 					}
 				} catch (NumberFormatException e) {
@@ -420,8 +460,14 @@ public class LogIn implements Logging_In {
 						}
 						
 				} else if (choose == 2) {
-					System.out.println("Transferring money to:");
-					System.out.println("Savings...");
+					System.out.println("Please put your Checkings account number... (spaces included)");				
+					bankAccount = sc.nextLine();
+						if (security.checkBankAccount(bankAccount, getUser, choose)) {
+							System.out.println("Success!");
+						} else {
+							System.out.println("No checkings account number!");
+							break;
+						}
 				}
 				while (correctAmount) {
 					result = customerOptionFourMenu(getUser, choose, correctAmount);

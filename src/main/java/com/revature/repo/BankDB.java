@@ -32,15 +32,19 @@ public interface BankDB {
 
 	public boolean selectExisitingAccount(int choice, String bankAccount);
 
-	boolean updateMoney(int choice, double newBalance, String getUser);
+	boolean updateMoney(int choice, double newBalance, String getUser); // adding a new balance
 
 	public double selectCurrentBalance(int choice, String getUser);
 
-	public boolean updateBalance(int choice, double newBalance, String getUser);
+	public boolean updateBalance(int choice, double newBalance, String getUser); // deducting to new balance
 
 	public boolean selectBankAccount(String bankAccount, String user, int choose);
 
 	public boolean selectAccount(String transferUser);
+
+	public boolean updateTransferMoney(int choice, double newBalance, String transferUser);
+
+	public double selectTransferBalance(int choice, String transferUser);
 
 	
 }

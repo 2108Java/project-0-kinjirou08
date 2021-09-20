@@ -56,7 +56,12 @@ public class BankServiceImpl implements BankService {
 		// TODO Auto-generated method stub
 		return database2.selectCurrentBalance(choice, getUser);
 	}
-
+	
+	public double getTransferMoney (int choice, String transferUser) {
+		
+		return database2.selectTransferBalance(choice, transferUser);
+	}
+	
 	public boolean addMoney(int choice, double newBalance, String getUser) {
 		// TODO Auto-generated method stub
 		return database2.updateMoney(choice, newBalance, getUser);
@@ -67,6 +72,9 @@ public class BankServiceImpl implements BankService {
 		return database2.updateBalance(choice, newBalance, getUser);
 	}
 
-	
+	public boolean transferMoney(int choice, double newBalance, String transferUser) {
+		
+		return database2.updateTransferMoney(choice, newBalance, transferUser);
+	}
 
 }
