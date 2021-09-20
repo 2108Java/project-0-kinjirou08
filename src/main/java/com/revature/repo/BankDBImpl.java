@@ -545,7 +545,11 @@ public class BankDBImpl implements BankDB {
 					ResultSet RS = PS.executeQuery();
 				
 					while (RS.next()) {
+						if (!RS.getString("bank_account").equals(transferUser)) {
+							currentBalance = 0;
+						} else {
 						currentBalance = RS.getDouble("balance");
+						}
 					}
 					
 				} else if (choose == 2) {
@@ -559,7 +563,11 @@ public class BankDBImpl implements BankDB {
 					ResultSet RS = PS.executeQuery();
 				
 					while (RS.next()) {
+						if (!RS.getString("bank_account").equals(transferUser)) {
+							currentBalance = 0;
+						} else {
 						currentBalance = RS.getDouble("balance");
+						}
 					}
 				}
 				

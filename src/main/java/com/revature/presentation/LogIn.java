@@ -264,6 +264,9 @@ public class LogIn implements Logging_In {
 							transferUser = sc.nextLine();
 								System.out.println(transferUser);
 								getTransferMoney = service.getTransferMoney(choice, transferUser);
+								if (getTransferMoney == 0) {
+									System.out.println("Cannot transfer with the same bank account!");
+								} else {
 								System.out.println("Current Balance (Checkings): "+getTransferMoney);
 								System.out.println(security.checkAccount(transferUser)); 
 								if (security.checkAccount(transferUser)) {  
@@ -273,7 +276,7 @@ public class LogIn implements Logging_In {
 									service.transferMoney(choice, newBalance, transferUser);
 									System.out.println("New Balance in Checkings: " +service.getTransferMoney(choice, transferUser));											
 								}
-
+							}
 						}
 					}
 				} catch (NumberFormatException e) {
