@@ -230,24 +230,59 @@ public class LogIn implements Logging_In {
 		
 		}
 
-//	private boolean customerOptionFourMenu (String user, int choose, boolean correctAmount) {
-//	
-//		int choice = choose;
-//		String getUser = user;
-//		double amount = 0;
-//		double getMoney = 0;
-//		double newBalance = 0;
-//		
-//		if (choose == 1) {
-//			System.out.println("How much ");
-//		} else if (choose == 2) {
-//			
-//		}
-//		
+	private boolean customerOptionFourMenu (String user, int choose, boolean correctAmount) {	
 		
-//		return correctAmount;
-//	}
-//	
+		
+		int choice = choose;
+		String getUser = user;
+		double amount = 0;
+		double getMoney = 0;
+		double newBalance = 0;
+		String transferUser;
+		
+		if (choose == 1) {
+			getMoney = service.getMoney(choice, getUser);
+			System.out.println("Current Balance: "+getMoney);
+				try {
+					System.out.println("How much would you like to transfer from your savings account?");
+					amount = Double.parseDouble(sc.nextLine());
+					newBalance = getMoney - amount;
+					if (newBalance < 0 ) {
+						System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
+						System.out.println("");
+					} else {
+						if (amount < 0 ) {
+							System.out.println("You've inputed wrong amount!");
+							System.out.println("");
+						} else {
+							System.out.println("Please put the bank account number that you want");
+							System.out.print(" your money to be transfered (space included)... ");
+							transferUser = sc.nextLine();
+								System.out.println(transferUser);
+								System.out.println(security.checkAccount(transferUser)); 
+								if (security.checkAccount(transferUser)) { // 
+									
+//									
+								}
+								System.out.println(transferUser);
+								
+								
+//							if (service.deductMoney(choice,newBalance,getUser)) {
+//								System.out.println("You've withdrawn: " +amount);
+//								System.out.println("Current Balance: "+newBalance);
+//								System.out.println("Successfully withdrawn money!");
+//								correctAmount = false;
+//							}
+						}
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid input! Please only input numbers");
+					System.out.println("");
+				}
+		}
+		return correctAmount;
+	}
+	
 	public void employeeMenu(String user) {
 		
 		List<Items> allAccounts;
@@ -379,18 +414,21 @@ public class LogIn implements Logging_In {
 					bankAccount = sc.nextLine();
 						if (security.checkBankAccount(bankAccount, getUser, choose)) {
 							System.out.println("Success!");
+						} else {
+							System.out.println("No savings account number!");
+							break;
 						}
 						
 				} else if (choose == 2) {
 					System.out.println("Transferring money to:");
 					System.out.println("Savings...");
 				}
-//				while (correctAmount) {
-//					result = customerOptionFourMenu(getUser, choose, correctAmount);
-//					if (result == false) {
-//						break;
-//					}
-//				}
+				while (correctAmount) {
+					result = customerOptionFourMenu(getUser, choose, correctAmount);
+					if (result == false) {
+						break;
+					}
+				}
 				break;
 			}	
 		if (yn == 'y' || yn == 'Y') {

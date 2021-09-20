@@ -39,13 +39,13 @@ public class auth_validate implements Security {
         Random value = new Random();
 
     //Generate two values to append to 'BE'
-	    int r1 = value.nextInt(6);
-	    int r2 = value.nextInt(6);
+	    int r1 = value.nextInt(3);
+	    int r2 = value.nextInt(3);
 	    start += Integer.toString(r1) + Integer.toString(r2);
 	
 //	    int count = 0;
 	    int n = 0;
-	    for(int i =0; i < 6;i++)
+	    for(int i =0; i < 3;i++)
 	    {
 //	        if(count == 4)
 //	        {
@@ -53,7 +53,7 @@ public class auth_validate implements Security {
 //	            count =0;
 //	        }
 //	        else 
-	            n = value.nextInt(6);
+	            n = value.nextInt(3);
 	            start += Integer.toString(n);
 //	            count++;
 			
@@ -70,5 +70,10 @@ public class auth_validate implements Security {
 	public boolean checkBankAccount(String bankAccount, String user, int choose) {
 		// TODO Auto-generated method stub
 		return database.selectBankAccount(bankAccount, user, choose);
+	}
+
+	public boolean checkAccount(String transferUser) {
+		// TODO Auto-generated method stub
+		return database.selectAccount(transferUser);
 	}
 }

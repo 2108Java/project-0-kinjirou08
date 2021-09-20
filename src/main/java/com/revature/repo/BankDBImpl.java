@@ -620,10 +620,12 @@ public class BankDBImpl implements BankDB {
 		
 		boolean success = false;
 		
+		int choose = choice;
+		
 		try (Connection connect = DriverManager.getConnection(url, username, password)) {
 
 			
-			if (choice == 1) {
+			if (choose == 1) {
 				
 				String query = "SELECT bank_account FROM savings_acct WHERE savings_username = ?";
 
@@ -641,7 +643,7 @@ public class BankDBImpl implements BankDB {
 						success = false;
 					}
 				}
-			} else if (choice == 2) {
+			} else if (choose == 2) {
 				
 				String query = "SELECT c_checkings FROM checkings_acct WHERE checkings_username = ?";
 
@@ -667,6 +669,58 @@ public class BankDBImpl implements BankDB {
 		e.printStackTrace();
 	}
 		
+		return success;
+	}
+
+	@Override
+	public boolean selectAccount(String transferUser) {
+		
+		boolean success = false;
+		
+			try (Connection connect = DriverManager.getConnection(url, username, password)) {
+				
+				String query = "SELECT bank_account from savings_acct where bank_account = ?";
+				
+				PreparedStatement ps = connect.prepareStatement(query);
+				
+				ps.setString(1,transferUser);
+				
+				ResultSet rs = ps.executeQuery();
+			
+				while (rs.next()) {
+					
+					if (rs.getString("bank_account").equals(transferUser)) {
+						success = true;						
+					} else {
+						 success = false;
+						 rs.close();
+						 //connect.close();
+					}				
+				}
+				
+				query = "SELECT bank_account from checkings_acct where bank_account = ?";
+				
+				ps = connect.prepareStatement(query);
+				
+				ps.setString(1,transferUser);
+				
+				rs = ps.executeQuery();
+				
+				while (rs.next()) {
+					
+					if (rs.getString("bank_account").equals(transferUser)) {
+						success = true;						
+					} else {
+						 success = false;
+						 rs.close();
+					}
+				}
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		return success;
 	}
 

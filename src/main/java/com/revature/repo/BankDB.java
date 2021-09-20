@@ -40,5 +40,7 @@ public interface BankDB {
 
 	public boolean selectBankAccount(String bankAccount, String user, int choose);
 
+	public boolean selectAccount(String transferUser);
+
 	
 }
