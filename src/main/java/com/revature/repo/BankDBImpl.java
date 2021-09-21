@@ -536,39 +536,40 @@ public class BankDBImpl implements BankDB {
 				
 				if (choose == 1) {
 					
-					String query = "SELECT balance from checkings_acct WHERE bank_account = ?;";
+					String query = "SELECT balance, bank_account from checkings_acct WHERE bank_account = ?;";
 					
-					PreparedStatement PS = connect.prepareStatement(query);
+					PreparedStatement ps = connect.prepareStatement(query);
 		
-					PS.setString(1, transferUser);
+					ps.setString(1, transferUser);
 		
-					ResultSet RS = PS.executeQuery();
+					ResultSet rs = ps.executeQuery();
 				
-					while (RS.next()) {
-						if (!RS.getString("bank_account").equals(transferUser)) {
+					while (rs.next()) {
+						if (!rs.getString("bank_account").equals(transferUser)) {
 							currentBalance = 0;
 						} else {
-						currentBalance = RS.getDouble("balance");
+						currentBalance = rs.getDouble("balance");
 						}
 					}
 					
 				} else if (choose == 2) {
 					
-					String query = "SELECT balance from savings_acct WHERE bank_account = ?;";
+					String query = "SELECT balance,bank_account from savings_acct WHERE bank_account = ?;";
 					
-					PreparedStatement PS = connect.prepareStatement(query);
+					PreparedStatement ps = connect.prepareStatement(query);
 		
-					PS.setString(1, transferUser);
+					ps.setString(1, transferUser);
 		
-					ResultSet RS = PS.executeQuery();
+					ResultSet rs = ps.executeQuery();
 				
-					while (RS.next()) {
-						if (!RS.getString("bank_account").equals(transferUser)) {
+					while (rs.next()) {
+						if (!rs.getString("bank_account").equals(transferUser)) {
 							currentBalance = 0;
 						} else {
-						currentBalance = RS.getDouble("balance");
+						currentBalance = rs.getDouble("balance");
 						}
 					}
+					
 				}
 				
 		
@@ -818,6 +819,57 @@ public class BankDBImpl implements BankDB {
 		
 		return success;
 		
+	}
+
+	@Override
+	public List<Items> getSavingsAccount(int choose, String user) {
+		
+		List<Items> savingsAccount = new ArrayList<>();
+		
+			try (Connection connect = DriverManager.getConnection(url, username, password)) {
+				
+				if (choose == 1) {
+					
+					String query = "select bank_account, balance from savings_acct where savings_username = ?;";
+					
+					PreparedStatement ps = connect.prepareStatement(query);
+					
+					ps.setString(1, user);
+					
+					ResultSet rs = ps.executeQuery();
+							
+						while (rs.next()) {
+							
+							savingsAccount.add( new Items(rs.getString("bank_account"),
+									rs.getDouble("balance"))
+									);	
+						}
+						rs.close();
+				} else if (choose == 2) {
+					
+					String query = "select bank_account, balance from checkings_acct where checkings_username = ?;";
+							
+					PreparedStatement ps = connect.prepareStatement(query);
+					
+					ps.setString(1, user);
+					
+					ResultSet rs = ps.executeQuery();
+							
+						while (rs.next()) {
+							
+							savingsAccount.add( new Items(rs.getString("bank_account"),
+									rs.getDouble("balance"))
+									);	
+						}
+						rs.close();
+				}
+				
+				
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return savingsAccount;
 	}
 
 

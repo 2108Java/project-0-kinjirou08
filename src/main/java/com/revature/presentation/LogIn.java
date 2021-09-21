@@ -1,11 +1,18 @@
 package com.revature.presentation;
 import java.util.List;
+
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
+
 import com.revature.models.Items;
 import com.revature.security.auth_validate;
 import com.revature.service.BankServiceImpl;
 
+
 public class LogIn implements Logging_In {
+	
+	private final static Logger loggy = Logger.getLogger(LogIn.class);
 	
 	Scanner sc = new Scanner(System.in);
 	
@@ -63,6 +70,18 @@ public class LogIn implements Logging_In {
 		}
 	}
 	
+	private static void viewBankAccounts (List<Items> checkBankAccounts) {
+		
+		for (int i = 0; i < checkBankAccounts.size(); i ++) {
+			if (checkBankAccounts.get(i) != null) {
+				System.out.println("Bank Account Number: " + checkBankAccounts.get(i).getSavings());
+				System.out.println("Current Balance: " + checkBankAccounts.get(i).getAmount());				
+				System.out.println("");
+			}
+		}
+		
+	}
+
 	private boolean customerOptionOneMenu (int choose, String user, boolean correctAmount) {
 		
 		//List <Items> getBankAccount;
@@ -231,8 +250,7 @@ public class LogIn implements Logging_In {
 		}
 
 	private boolean customerOptionFourMenu (String user, int choose, boolean correctAmount) {	
-		
-		
+			
 		int choice = choose;
 		String getUser = user;
 		double amount = 0;
@@ -260,10 +278,11 @@ public class LogIn implements Logging_In {
 							System.out.println("");
 						} else {
 							System.out.println("Please put the bank account number that you want");
-							System.out.print(" your money to be transfered (space included)... ");
+							System.out.print("your money to be transfered (space included)... ");
 							transferUser = sc.nextLine();
 								System.out.println(transferUser);
 								getTransferMoney = service.getTransferMoney(choice, transferUser);
+								System.out.println(getTransferMoney);
 								if (getTransferMoney == 0) {
 									System.out.println("Cannot transfer with the same bank account!");
 								} else {
@@ -274,7 +293,8 @@ public class LogIn implements Logging_In {
 									System.out.println("Current Balance in Savings: "+service.getMoney(choice,getUser));
 									newBalance = getTransferMoney + amount;
 									service.transferMoney(choice, newBalance, transferUser);
-									System.out.println("New Balance in Checkings: " +service.getTransferMoney(choice, transferUser));											
+									System.out.println("New Balance in Checkings: " +service.getTransferMoney(choice, transferUser));
+									correctAmount = true;
 								}
 							}
 						}
@@ -306,6 +326,9 @@ public class LogIn implements Logging_In {
 							transferUser = sc.nextLine();
 								System.out.println(transferUser);
 								getTransferMoney = service.getTransferMoney(choice, transferUser);
+								if (getTransferMoney == 0) {
+									System.out.println("Cannot transfer with the same bank account!");
+								} else {
 								System.out.println("Current Balance (Checkings): "+getTransferMoney);
 								System.out.println(security.checkAccount(transferUser)); 
 								if (security.checkAccount(transferUser)) {  
@@ -314,14 +337,33 @@ public class LogIn implements Logging_In {
 									newBalance = getTransferMoney + amount;
 									service.transferMoney(choice, newBalance, transferUser);
 									System.out.println("New Balance in Savings: " +service.getTransferMoney(choice, transferUser));											
+									correctAmount = true;
 								}
-
+							}
 						}
 					}
 				} catch (NumberFormatException e) {
 					System.out.println("Invalid input! Please only input numbers");
 					System.out.println("");
 				}
+		}
+		return correctAmount;
+	}
+
+	private boolean customerOptionFiveMenu (String user, int choose, boolean correctAmount) {
+		
+		List<Items> checkBankAccount;
+		
+//		int choice = choose;
+//		String getUser = user;
+		if (choose == 1) {
+			checkBankAccount = service.checkSavingsAccount(choose,user);
+			viewBankAccounts(checkBankAccount);
+			correctAmount = false;
+		} else if (choose == 2) {
+			checkBankAccount = service.checkSavingsAccount(choose,user);
+			viewBankAccounts(checkBankAccount);
+			correctAmount = false;
 		}
 		return correctAmount;
 	}
@@ -479,6 +521,17 @@ public class LogIn implements Logging_In {
 					}
 				}
 				break;
+			case "5":
+				System.out.println("Which account would you want to check?");
+				System.out.println("1) Savings or 2) Checkings");
+				choose = Integer.parseInt(sc.nextLine());
+				while (correctAmount) {
+					result = customerOptionFiveMenu(getUser, choose, correctAmount);
+					if (result == false) {
+						break;
+					}
+				}
+				break;
 			}	
 		if (yn == 'y' || yn == 'Y') {
 			System.out.print("(Y/N) Is there anything else you need to do?: ");
@@ -584,12 +637,14 @@ public class LogIn implements Logging_In {
 		boolean result = true;
 		String choose = "";
 		
+		loggy.info("Starting the application");
 	
 		while (result) {
-			
+						
 			System.out.println("Welcome to ABC Bank, what would you like to do?");
 			optionMenu();
 			choose = sc.nextLine();
+			
 			
 			switch (choose) {
 			case "1":

@@ -71,6 +71,13 @@ public Items(String getUser, double amount, String newBankAccount) {
 		setAmount(amount);
 		
 	}
+	public Items(String getUser, double balance) {
+		
+		setSavings(getUser);
+		setAmount(balance);
+		
+	}
+		
 	public int getId() {
 		return id;
 	}

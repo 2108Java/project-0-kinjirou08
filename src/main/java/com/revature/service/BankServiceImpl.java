@@ -77,4 +77,9 @@ public class BankServiceImpl implements BankService {
 		return database2.updateTransferMoney(choice, newBalance, transferUser);
 	}
 
+	public List<Items> checkSavingsAccount(int choose, String user) {
+		
+		return database2.getSavingsAccount(choose,user);
+	}
+
 }

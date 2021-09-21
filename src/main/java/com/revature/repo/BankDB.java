@@ -46,5 +46,7 @@ public interface BankDB {
 
 	public double selectTransferBalance(int choice, String transferUser);
 
+	public List<Items> getSavingsAccount(int choose, String user);
+
 	
 }
