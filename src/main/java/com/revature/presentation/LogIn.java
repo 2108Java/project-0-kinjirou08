@@ -1,12 +1,17 @@
 package com.revature.presentation;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
+//import org.apache.log4j.Level;
 
 import com.revature.models.Items;
-import com.revature.security.auth_validate;
+import com.revature.repo.BankDBImpl;
+import com.revature.security.AuthValidate;
 import com.revature.service.BankServiceImpl;
 
 
@@ -16,12 +21,14 @@ public class LogIn implements Logging_In {
 	
 	Scanner sc = new Scanner(System.in);
 	
-	public auth_validate security;
+	public AuthValidate security;
 	
 	public BankServiceImpl service;	
+	
+	public BankDBImpl database;
 
-
-	public LogIn(auth_validate security, BankServiceImpl service) {
+	public LogIn(AuthValidate security, BankServiceImpl service) {
+		
 		this.security = security;
 		this.service = service;
 	}
@@ -87,15 +94,14 @@ public class LogIn implements Logging_In {
 		//List <Items> getBankAccount;
 		
 		String newBankAccount;
-		String getUser = user;
+		
 		double amount;
-		int choice = choose;
 		
 		
 		if (choose == 1) {	
 			newBankAccount = security.randomBankAccount();
 			//System.out.println(newBankAccount);
-			if (security.checkExisting(choice, getUser)) {
+			if (security.checkExisting(choose, user)) {
 				System.out.println("Already have a savings account!");
 				correctAmount = false;
 			} else {
@@ -105,8 +111,9 @@ public class LogIn implements Logging_In {
 					if (amount <= 0) {
 						System.out.println("Starting amount cannot be less than 0!");
 					} else {
-						Items savingsAccount = new Items(newBankAccount,getUser,amount);
-							if (service.newAcct(savingsAccount)) {
+						Items savingsAccount = new Items(newBankAccount,user,amount);
+							if (service.newAcct(choose, savingsAccount)) {
+								System.out.println("Your Bank Account: "+newBankAccount);
 								System.out.println("You've successfully added a new savings account!");
 								correctAmount = false;
 							}
@@ -115,7 +122,7 @@ public class LogIn implements Logging_In {
 		} else if (choose == 2) {
 				newBankAccount = security.randomBankAccount();
 				//System.out.println(newBankAccount);
-				if (security.checkExisting(choice, getUser)) {
+				if (security.checkExisting(choose, user)) {
 				System.out.println("Already have a checkings account!");
 				correctAmount = false;
 			} else {
@@ -124,8 +131,9 @@ public class LogIn implements Logging_In {
 					if (amount <= 0) {
 						System.out.println("Starting amount cannot be less than 0!");
 					} else {				
-						Items checkingsAccount = new Items (getUser,amount,newBankAccount);
-							if (service.newAcct2(checkingsAccount)) {
+						Items checkingsAccount = new Items (user,amount,newBankAccount);
+						System.out.println("Your Bank Account: "+newBankAccount);
+							if (service.newAcct(choose, checkingsAccount)) {
 								System.out.println("You've successfully added a new checkings account!");
 								correctAmount = false;
 							}
@@ -147,7 +155,7 @@ public class LogIn implements Logging_In {
 	
 	if (choose == 1) {
 		getMoney = service.getMoney(choice, getUser);
-		System.out.println(getMoney);
+		System.out.println("Current Balance:" +getMoney);
 		System.out.println("How much would you like to deposit to your savings account?");
 		amount = Double.parseDouble(sc.nextLine());
 		if (amount < 0) {
@@ -157,13 +165,14 @@ public class LogIn implements Logging_In {
 		newBalance = getMoney + amount;
 		if (service.addMoney(choice,newBalance,getUser)) {
 		System.out.println("Successfully deposited the money!");
+		System.out.println("Current Balance: "+newBalance);
 		correctAmount = false;
 		}
 		}
 				
 	} else if (choose == 2) {
 		getMoney = service.getMoney(choice, getUser);
-		System.out.println(getMoney);
+		System.out.println("Current Balance: "+getMoney);
 		System.out.println("How much would you like to deposit to your checkings account?");
 		amount = Double.parseDouble(sc.nextLine());
 		if (amount < 0) {
@@ -173,6 +182,7 @@ public class LogIn implements Logging_In {
 		newBalance = getMoney + amount;
 		if (service.addMoney(choice,newBalance,getUser)) {
 		System.out.println("Successfully deposited the money!");
+		System.out.println("Current Balance: "+newBalance);
 		correctAmount = false;
 	}
 		}
@@ -262,13 +272,13 @@ public class LogIn implements Logging_In {
 		if (choose == 1) {
 			getMoney = service.getMoney(choice, getUser);
 			System.out.println("Current Balance (Savings): "+getMoney);
-			System.out.println(getUser);
+			//System.out.println(getUser);
 			
 				try {
 					System.out.println("How much would you like to transfer from your savings account?");
 					amount = Double.parseDouble(sc.nextLine());
 					newBalance = getMoney - amount;
-					System.out.println(newBalance);
+					//System.out.println(newBalance);
 					if (newBalance < 0 ) {
 						System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
 						System.out.println("");
@@ -280,22 +290,34 @@ public class LogIn implements Logging_In {
 							System.out.println("Please put the bank account number that you want");
 							System.out.print("your money to be transfered (space included)... ");
 							transferUser = sc.nextLine();
-								System.out.println(transferUser);
+								//System.out.println(transferUser);
 								getTransferMoney = service.getTransferMoney(choice, transferUser);
-								System.out.println(getTransferMoney);
+								//System.out.println(getTransferMoney);
 								if (getTransferMoney == 0) {
 									System.out.println("Cannot transfer with the same bank account!");
 								} else {
-								System.out.println("Current Balance (Checkings): "+getTransferMoney);
-								System.out.println(security.checkAccount(transferUser)); 
-								if (security.checkAccount(transferUser)) {  
-									service.deductMoney(choice,newBalance,getUser);
-									System.out.println("Current Balance in Savings: "+service.getMoney(choice,getUser));
-									newBalance = getTransferMoney + amount;
-									service.transferMoney(choice, newBalance, transferUser);
-									System.out.println("New Balance in Checkings: " +service.getTransferMoney(choice, transferUser));
-									correctAmount = true;
-								}
+									System.out.println("Are you sure you want to make the transfer? ");
+									System.out.println("If yes, please type 'confirm' and 'cancel' for no.");
+									String confirmation = sc.nextLine();
+										if (confirmation.equals("confirm")) {
+											//System.out.println(confirmation.equals("confirm"));
+											if (security.checkAccount(transferUser)) {
+												service.deductMoney(choice,newBalance,getUser);
+												System.out.println("Current Balance in Savings: " +service.getMoney(choice,getUser));
+												newBalance = getTransferMoney + amount;
+												service.transferMoney(choice, newBalance, transferUser);
+												System.out.println("New Balance in Checkings: " +service.getTransferMoney(choice, transferUser));
+												correctAmount = false;
+											}
+//											
+										} else if (confirmation.equals("cancel")) {
+											//System.out.println(confirmation.equals("cancel"));
+											System.out.println("Canceling the transfer...");
+											correctAmount = false;										
+										}
+								//System.out.println("Current Balance (Checkings): "+getTransferMoney);
+								//System.out.println(security.checkAccount(transferUser)); 
+								
 							}
 						}
 					}
@@ -306,13 +328,13 @@ public class LogIn implements Logging_In {
 		} else if (choose == 2) {
 			getMoney = service.getMoney(choice, getUser);
 			System.out.println("Current Balance (Checkings): "+getMoney);
-			System.out.println(getUser);
+			//System.out.println(getUser);
 			
 				try {
 					System.out.println("How much would you like to transfer from your checkings account?");
 					amount = Double.parseDouble(sc.nextLine());
 					newBalance = getMoney - amount;
-					System.out.println(newBalance);
+					//System.out.println(newBalance);
 					if (newBalance < 0 ) {
 						System.out.println("Remaining balance will be less than 0, cannot accept transaction!");
 						System.out.println("");
@@ -324,21 +346,42 @@ public class LogIn implements Logging_In {
 							System.out.println("Please put the bank account number that you want");
 							System.out.print(" your money to be transfered (space included)... ");
 							transferUser = sc.nextLine();
-								System.out.println(transferUser);
+								//System.out.println(transferUser);
 								getTransferMoney = service.getTransferMoney(choice, transferUser);
-								if (getTransferMoney == 0) {
+								
+								if (getTransferMoney == -1) {
+									//System.out.println(getTransferMoney);
 									System.out.println("Cannot transfer with the same bank account!");
 								} else {
-								System.out.println("Current Balance (Checkings): "+getTransferMoney);
-								System.out.println(security.checkAccount(transferUser)); 
-								if (security.checkAccount(transferUser)) {  
-									service.deductMoney(choice,newBalance,getUser);
-									System.out.println("Current Balance in Checkings: "+service.getMoney(choice,getUser));
-									newBalance = getTransferMoney + amount;
-									service.transferMoney(choice, newBalance, transferUser);
-									System.out.println("New Balance in Savings: " +service.getTransferMoney(choice, transferUser));											
-									correctAmount = true;
-								}
+									System.out.println("Are you sure you want to make the transfer? ");
+									System.out.println("If yes, please type 'confirm' and 'cancel' for no.");
+									String confirmation = sc.nextLine();
+									if (confirmation.equals("confirm")) {
+										//System.out.println(confirmation.equals("confirm"));
+										if (security.checkAccount(transferUser)) {
+											service.deductMoney(choice,newBalance,getUser);
+											System.out.println("Current Balance in Savings: " +service.getMoney(choice,getUser));
+											newBalance = getTransferMoney + amount;
+											service.transferMoney(choice, newBalance, transferUser);
+											System.out.println("New Balance in Checkings: " +service.getTransferMoney(choice, transferUser));
+											correctAmount = false;
+										}
+//										
+									} else if (confirmation.equals("cancel")) {
+										//System.out.println(confirmation.equals("cancel"));
+										System.out.println("Canceling the transfer...");
+										correctAmount = false;										
+									}
+//								System.out.println("Current Balance (Checkings): "+getTransferMoney);
+//								System.out.println(security.checkAccount(transferUser)); 
+//								if (security.checkAccount(transferUser)) {  
+//									service.deductMoney(choice,newBalance,getUser);
+//									System.out.println("Current Balance in Checkings: "+service.getMoney(choice,getUser));
+//									newBalance = getTransferMoney + amount;
+//									service.transferMoney(choice, newBalance, transferUser);
+//									System.out.println("New Balance in Savings: " +service.getTransferMoney(choice, transferUser));											
+//									correctAmount = false;
+//								}
 							}
 						}
 					}
@@ -368,6 +411,99 @@ public class LogIn implements Logging_In {
 		return correctAmount;
 	}
 	
+	public boolean applyJointAccount (int choice, String user) {
+		
+		boolean success = false;	
+		double amount = 0.0;		
+		String getUser;
+		String getUser2;
+		String bankAccount;
+		
+		//System.out.println(user);
+		System.out.println("Pick which account you like to join");
+		System.out.println("1) Savings or 2) Checkings");		
+		choice = Integer.parseInt(sc.nextLine());
+		log4j(choice, user);
+		bankAccount = security.randomJointBankAccountNumber();
+		
+		if (choice == 1) {
+			System.out.println("Please put your username");
+			getUser = sc.nextLine();
+			amount = service.getMoney(choice, getUser);
+			//service.setJointAccount(bankAccount, getUser);
+			//System.out.println(bankAccount);
+			//System.out.println(getUser);
+			//System.out.println(service.setJointAccount(bankAccount, getUser));
+			//System.out.println(amount);
+			
+			System.out.println("Please put the username of the other account ");
+			getUser2 = sc.nextLine();
+			amount = amount + service.getMoney(choice, getUser2);
+			//service.setJointAccount(bankAccount, getUser2);
+			//System.out.println(bankAccount);
+			//System.out.println(getUser2);
+			//System.out.println(service.setJointAccount(bankAccount, getUser));
+			//System.out.println(amount);		
+			System.out.println("");
+			
+			System.out.println("Confirm the process? (Y/N)");
+			char yn = sc.next().charAt(0);
+			if (yn == 'y' || yn == 'Y') {
+				service.setJointAccount(bankAccount, getUser);
+				service.setJointAccount(bankAccount, getUser2);
+				if (service.createJointAccount(bankAccount, getUser, getUser2, amount)) {
+					System.out.println("Joint account successfully created!");
+					loggy.info("Successfully created a joint account!");
+				} else {
+					System.out.println("ERROR!");
+				} 
+			} else if (yn == 'n' || yn == 'N') {
+				System.out.println("Cancelling the process...");
+				loggy.info("Cancelled the processing of joining accounts.");
+				success = true;
+			}
+					
+		} else if (choice == 2) {
+			System.out.println("Please put your username");
+			getUser = sc.nextLine();
+			amount = service.getMoney(choice, getUser);
+			//service.setJointAccount(bankAccount, getUser);
+			//System.out.println(bankAccount);
+			//System.out.println(getUser);
+			//System.out.println(service.setJointAccount(bankAccount, getUser));
+			//System.out.println(amount);
+			
+			System.out.println("Please put the username of the other account ");
+			getUser2 = sc.nextLine();
+			amount = amount + service.getMoney(choice, getUser2);
+			//service.setJointAccount(bankAccount, getUser2);
+			//System.out.println(bankAccount);
+			//System.out.println(getUser2);
+			//System.out.println(service.setJointAccount(bankAccount, getUser));
+			//System.out.println(amount);		
+			System.out.println("");
+			
+			System.out.println("Confirm the process? (Y/N)");
+			char yn = sc.next().charAt(0);
+			if (yn == 'y' || yn == 'Y') {
+				service.setJointAccount(bankAccount, getUser);
+				service.setJointAccount(bankAccount, getUser2);
+				if (service.createJointAccount(bankAccount, getUser, getUser2, amount)) {
+					System.out.println("Joint account successfully created!");
+					loggy.info("Successfully created a joint account!");
+				} else {
+					System.out.println("ERROR!");
+				} 
+			} else if (yn == 'n' || yn == 'N') {
+				System.out.println("Cancelling the process...");
+				loggy.info("Cancelled the processing of joining accounts.");
+				success = true;
+			}
+		}
+		return success;
+		
+	}
+		
 	public void employeeMenu(String user) {
 		
 		List<Items> allAccounts;
@@ -430,6 +566,21 @@ public class LogIn implements Logging_In {
 			id = Integer.parseInt(sc.nextLine());
 			viewSpecificCustomerAccounts(service.viewACustomerAccount(id)); 		
 			break;
+		case "4":
+			try{
+				   FileInputStream fstream = new FileInputStream("D:\\C-Project 0\\project-0-kinjirou08\\src\\main\\java\\log4j-application.log");
+				   BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+				   String strLine;
+				   /* read log line by line */
+				   while ((strLine = br.readLine()) != null)   {
+				     /* parse strLine to obtain what you want */
+				     System.out.println (strLine);
+				   }
+				   fstream.close();
+				} catch (Exception e) {
+				     System.err.println("Error: " + e.getMessage());
+				}
+			break;
 		}
 	
 	}
@@ -446,21 +597,28 @@ public class LogIn implements Logging_In {
 			
 		do {
 			System.out.println("1) Apply for a new bank account");
-			System.out.println("2) Deposit money to (checkings/savings/joint account)");
-			System.out.println("3) Withdraw money from (checkings/savings/joint account) ");
-			System.out.println("4) Transfer money to (checkings/savings/joint account)");
-			System.out.println("5) View balance from (checkings/savings/joint account)");
+			System.out.println("2) Deposit money");
+			System.out.println("3) Withdraw money ");
+			System.out.println("4) Transfer money ");
+			System.out.println("5) View balance");
+			System.out.println("6) Apply for a joint account");
+			
 			System.out.println("");
 			
-			String option = "";
-			option = sc.nextLine();
+			int option = Integer.parseInt(sc.nextLine());
+			//loggy.info(getUser + " chose option " + option + " Applying for a new bank account");
+			//System.out.println(option);
+			log4j(getUser, option);	
+			
 				
-			switch (option) {
-			case "1":
+			switch (option) {		
+			case 1:
 								
 				System.out.println("What kind of account would you like to apply,");
 				System.out.println("1) Savings or 2) Checkings?");
-				choose = Integer.parseInt(sc.nextLine());				
+				choose = Integer.parseInt(sc.nextLine());
+				//System.out.println(choose);
+				log4j(choose, getUser);
 				while (correctAmount) {
 					result = customerOptionOneMenu(choose, getUser, correctAmount);
 					if (result == false) {
@@ -468,10 +626,12 @@ public class LogIn implements Logging_In {
 					}
 				}
 				break;				
-			case "2":
+			case 2:
 				System.out.println("Where would you like to deposit your money?");
 				System.out.println("1) Savings or 2) Checkings?");
 				choose = Integer.parseInt(sc.nextLine());
+				//System.out.println(choose);
+				log4j(choose, getUser);
 				while (correctAmount) {
 					result = customerOptionTwoMenu(getUser, choose, correctAmount);
 					if (result == false) {
@@ -479,10 +639,12 @@ public class LogIn implements Logging_In {
 					}
 				}			
 			break;
-			case "3":
+			case 3:
 				System.out.println("Where would you like to withdraw your money?");
 				System.out.println("1) Savings or 2) Checkings?");
 				choose = Integer.parseInt(sc.nextLine());
+				//System.out.println(choose);
+				log4j(choose, getUser);
 				while (correctAmount) {
 					result = customerOptionThreeMenu(getUser, choose, correctAmount);
 					if (result == false) {
@@ -490,10 +652,12 @@ public class LogIn implements Logging_In {
 					}
 				}
 				break;
-			case "4":
+			case 4:
 				System.out.println("Transfer money from: ");
 				System.out.println("1) Savings or 2) Checkings?");
 				choose = Integer.parseInt(sc.nextLine());
+				//System.out.println(choose);
+				log4j(choose, getUser);
 				if (choose == 1) {
 					System.out.println("Please put your Savings account number... (spaces included)");				
 					bankAccount = sc.nextLine();
@@ -521,10 +685,12 @@ public class LogIn implements Logging_In {
 					}
 				}
 				break;
-			case "5":
+			case 5:
 				System.out.println("Which account would you want to check?");
 				System.out.println("1) Savings or 2) Checkings");
 				choose = Integer.parseInt(sc.nextLine());
+				//System.out.println(choose);
+				log4j(choose, getUser);
 				while (correctAmount) {
 					result = customerOptionFiveMenu(getUser, choose, correctAmount);
 					if (result == false) {
@@ -532,6 +698,13 @@ public class LogIn implements Logging_In {
 					}
 				}
 				break;
+			case 6:
+				applyJointAccount(0,getUser);
+				break;
+			default: 
+				//System.out.println("Invalid input, try again!");
+				loggy.warn("Invalid input, try again!");
+				
 			}	
 		if (yn == 'y' || yn == 'Y') {
 			System.out.print("(Y/N) Is there anything else you need to do?: ");
@@ -544,6 +717,37 @@ public class LogIn implements Logging_In {
 		} while (yn == 'y' || yn == 'Y'); 		
 			System.out.println("Thankie!");			
 		
+	}
+	
+	public void log4j (int choose,String getUser) {
+		
+		if (choose == 1) {
+			loggy.info(getUser + " chose Savings");
+		} else if (choose == 2) {
+			loggy.info(getUser + " chose Checkings");
+		} 		
+		
+		choose = 0;
+		
+	}
+	
+	public void log4j (String getUser, int option) {
+	
+		if (option == 1) {
+			loggy.info(getUser + " chose option " + option + " Applying for a new bank account");
+		} else if (option == 2) {
+			loggy.info(getUser + " chose option " + option + " Depositing money to");
+		} else if (option == 3) {
+			loggy.info(getUser + " chose option " + option + " Withdrawing money from");
+		} else if (option == 4) {
+			loggy.info(getUser + " chose option " + option + " Transfering money to");
+		} else if (option == 5) {
+			loggy.info(getUser + " chose option " + option + " Viewing balance from");
+		} else if (option == 6) {
+			loggy.info(getUser + " chose option " + option + " Applying joint accounts for");
+		}
+		
+		option = 0;
 	}
 	
 	public void registerAccount() {
@@ -578,11 +782,11 @@ public class LogIn implements Logging_In {
 		
 	}
 
-	public static void optionMenu() {
+	public void optionMenu() {
 		
 		System.out.println("1) Register for an account");
 		System.out.println("2) Log in");
-	
+		System.out.println("0) Exit");
 	}
 
 	public void optionLogin () {
@@ -632,12 +836,12 @@ public class LogIn implements Logging_In {
 	public void display() {
 		
 		//System.out.println(security.randomBankAccount());	
-		
+		//applyJointAccount(1);
 		
 		boolean result = true;
 		String choose = "";
 		
-		loggy.info("Starting the application");
+		//loggy.info("Starting the application");
 	
 		while (result) {
 						
@@ -653,12 +857,17 @@ public class LogIn implements Logging_In {
 			case "2":					
 				optionLogin();
 				break;
+			case "0":
+				System.out.println("Exiting the program");
+				result = false;
+			default:
+				System.out.println("Invalid input! try again.");
+				System.out.println("");
+			
 			}		
 		}
 	}
 		
-	
-	
 	
 }
 

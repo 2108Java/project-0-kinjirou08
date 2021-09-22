@@ -64,7 +64,7 @@ public class Items {
 		
 	}
 	
-public Items(String getUser, double amount, String newBankAccount) {
+	public Items(String getUser, double amount, String newBankAccount) {
 		
 		setCheckings(newBankAccount);
 		setUser(getUser);

@@ -42,15 +42,15 @@ public class BankServiceImpl implements BankService {
 		return database2.selectACustomerAccount(id);
 	}
 
-	public boolean newAcct(Items newBankAccount) {
+	public boolean newAcct(int choose, Items newBankAccount) {
 		
-		return database2.insertNewSavings(newBankAccount);
+		return database2.insertNewBankAccounts(choose, newBankAccount);
 	}
 
-	public boolean newAcct2(Items newBankAccount) {
-		
-		return database2.insertNewCheckings(newBankAccount);
-	}
+//	public boolean newAcct2(Items newBankAccount) {
+//		
+//		return database2.insertNewCheckings(newBankAccount);
+//	}
 
 	public double getMoney(int choice, String getUser) {
 		// TODO Auto-generated method stub
@@ -82,4 +82,16 @@ public class BankServiceImpl implements BankService {
 		return database2.getSavingsAccount(choose,user);
 	}
 
+	public boolean setJointAccount(String bankAccount, String getUser) {
+		
+		return database2.updateJointAccount(bankAccount, getUser);
+	}
+
+	public boolean createJointAccount(String bankAccount, String getUser, String getUser2, double amount) {
+		
+		return database2.insertNewJointAccount(bankAccount, getUser, getUser2, amount);
+		
+	}
+
+	
 }

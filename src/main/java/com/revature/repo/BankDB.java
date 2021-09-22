@@ -26,9 +26,9 @@ public interface BankDB {
 
 	public List<Items> selectACustomerAccount(int id);
 	
-	public boolean insertNewSavings(Items newBankAccount);
+	public boolean insertNewBankAccounts(int choose, Items newBankAccount);
 	
-	public boolean insertNewCheckings(Items newBankAccount);
+	//public boolean insertNewCheckings(Items newBankAccount);
 
 	public boolean selectExisitingAccount(int choice, String bankAccount);
 
@@ -47,6 +47,10 @@ public interface BankDB {
 	public double selectTransferBalance(int choice, String transferUser);
 
 	public List<Items> getSavingsAccount(int choose, String user);
+
+	public boolean updateJointAccount(String bankAccount, String getUser);
+
+	public boolean insertNewJointAccount(String bankAccount, String getUser, String getUser2, double amount);
 
 	
 }

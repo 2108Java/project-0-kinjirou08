@@ -356,32 +356,57 @@ public class BankDBImpl implements BankDB {
 	}
 
 	@Override
-	public boolean insertNewSavings(Items newBankAccount) {
+	public boolean insertNewBankAccounts(int choose, Items newBankAccount) {
 		
 		boolean success = false;
 //		System.out.println(savingsAccount.getUser());
 //		System.out.println(savingsAccount.getSavings());
 		try (Connection connect = DriverManager.getConnection(url, username, password)) {
 			
+			if (choose == 1) {
+				
+				String query = "with new_order as (\r\n"
+						+ "  update customer_table set c_savings = ? where c_username = ? \r\n"
+						+ "  returning c_savings, c_username\r\n"
+						+ ")\r\n"
+						+ "insert into savings_acct (savings_username, bank_account, balance)\r\n"
+						+ "values \r\n"
+						+ "((select c_username from new_order),\r\n"
+						+ "(select c_savings from new_order), ?);";
+				
+				PreparedStatement PS = connect.prepareStatement(query);
+				
+				PS.setString(1, newBankAccount.getSavings());
+				PS.setString(2, newBankAccount.getUser());
+				PS.setDouble(3, newBankAccount.getAmount());		
+				
+				PS.execute();
+				
+				success = true;
+				
+			} else if (choose == 2) {
+				
+				String query = "with new_order as (\r\n"
+						+ "  update customer_table set c_checkings = ? where c_username = ? \r\n"
+						+ "  returning c_checkings, c_username\r\n"
+						+ ")\r\n"
+						+ "insert into checkings_acct (checkings_username, bank_account, balance)\r\n"
+						+ "values \r\n"
+						+ "((select c_username from new_order),\r\n"
+						+ "(select c_checkings from new_order), ?);\r\n"
+						+ "";
+				
+				PreparedStatement PS = connect.prepareStatement(query);
+				
+				PS.setString(1, newBankAccount.getCheckings());
+				PS.setString(2, newBankAccount.getUser());
+				PS.setDouble(3, newBankAccount.getAmount());		
+				
+				PS.execute();
+				
+				success = true;
+			}
 			
-			String query = "with new_order as (\r\n"
-					+ "  update customer_table set c_savings = ? where c_username = ? \r\n"
-					+ "  returning c_savings, c_username\r\n"
-					+ ")\r\n"
-					+ "insert into savings_acct (savings_username, bank_account, balance)\r\n"
-					+ "values \r\n"
-					+ "((select c_username from new_order),\r\n"
-					+ "(select c_savings from new_order), ?);";
-			
-			PreparedStatement PS = connect.prepareStatement(query);
-			
-			PS.setString(1, newBankAccount.getSavings());
-			PS.setString(2, newBankAccount.getUser());
-			PS.setDouble(3, newBankAccount.getAmount());		
-			
-			PS.execute();
-			
-			success = true;
 			
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
@@ -390,42 +415,6 @@ public class BankDBImpl implements BankDB {
 		return success;
 	}
 	
-	@Override
-	public boolean insertNewCheckings(Items newBankAccount) {
-		
-		boolean success = false;
-
-		try (Connection connect = DriverManager.getConnection(url, username, password)) {
-			
-			
-			String query = "with new_order as (\r\n"
-					+ "  update customer_table set c_checkings = ? where c_username = ? \r\n"
-					+ "  returning c_checkings, c_username\r\n"
-					+ ")\r\n"
-					+ "insert into checkings_acct (checkings_username, bank_account, balance)\r\n"
-					+ "values \r\n"
-					+ "((select c_username from new_order),\r\n"
-					+ "(select c_checkings from new_order), ?);\r\n"
-					+ "";
-			
-			PreparedStatement PS = connect.prepareStatement(query);
-			
-			PS.setString(1, newBankAccount.getCheckings());
-			PS.setString(2, newBankAccount.getUser());
-			PS.setDouble(3, newBankAccount.getAmount());		
-			
-			PS.execute();
-			
-			success = true;
-			
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}		
-		return success;
-
-	}
-
 	@Override
 	public boolean selectExisitingAccount(int choice, String bankAccount) {
 		
@@ -546,7 +535,7 @@ public class BankDBImpl implements BankDB {
 				
 					while (rs.next()) {
 						if (!rs.getString("bank_account").equals(transferUser)) {
-							currentBalance = 0;
+							currentBalance = -1;
 						} else {
 						currentBalance = rs.getDouble("balance");
 						}
@@ -871,8 +860,133 @@ public class BankDBImpl implements BankDB {
 		}		
 		return savingsAccount;
 	}
+	
+	public boolean updateJointAccount(String bankAccount, String getUser) {
+		
+		boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			String query = "update customer_table set c_joint = ? where c_username = ?";
+			
+			PreparedStatement ps = connect.prepareStatement(query);
+			
+			ps.setString(1, bankAccount);
+			ps.setString(2, getUser);
+			
+			ps.executeUpdate();
+			
+//			String query2 = "update customer_table set c_joint = 'JA 15795' where c_username = ?";
+//			
+//			ps = connect.prepareStatement(query2);
+//			
+//			ps.setString(1, getUser);
+//			
+			success = true;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return success;
+		
+		
+	}
 
-
+	@Override
+	public boolean insertNewJointAccount(String bankAccount, String getUser, String getUser2, double amount) {
+		
+		boolean success = false;
+		
+		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+			
+			String query = "insert into joint_acct (joint_bank_account, c_username1, c_username2, balance) values \r\n"
+					+ "	(\r\n"
+					+ "	(?),\r\n"
+					+ "	(select c_username from customer_table ct where ct.c_username = ?),\r\n"
+					+ "	(select c_username from customer_table ct where ct.c_username = ?),\r\n"
+					+ "	?);";
+			
+			PreparedStatement ps = connect.prepareStatement(query);
+			
+			ps.setString(1, bankAccount);
+			ps.setString(2, getUser);
+			ps.setString(3, getUser2);
+			ps.setDouble(4, amount);
+			
+			ps.execute();
+			
+			success = true;
+			
+		}catch (SQLException e) {
+			
+			e.printStackTrace();
+			
+		}
+		
+		return success;
+	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	@Override
+//	public boolean insertNewCheckings(Items newBankAccount) {
+//		
+//		boolean success = false;
+//
+//		try (Connection connect = DriverManager.getConnection(url, username, password)) {
+//			
+//			
+//			String query = "with new_order as (\r\n"
+//					+ "  update customer_table set c_checkings = ? where c_username = ? \r\n"
+//					+ "  returning c_checkings, c_username\r\n"
+//					+ ")\r\n"
+//					+ "insert into checkings_acct (checkings_username, bank_account, balance)\r\n"
+//					+ "values \r\n"
+//					+ "((select c_username from new_order),\r\n"
+//					+ "(select c_checkings from new_order), ?);\r\n"
+//					+ "";
+//			
+//			PreparedStatement PS = connect.prepareStatement(query);
+//			
+//			PS.setString(1, newBankAccount.getCheckings());
+//			PS.setString(2, newBankAccount.getUser());
+//			PS.setDouble(3, newBankAccount.getAmount());		
+//			
+//			PS.execute();
+//			
+//			success = true;
+//			
+//	} catch (SQLException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}		
+//		return success;
+//
+//	}
+
 }

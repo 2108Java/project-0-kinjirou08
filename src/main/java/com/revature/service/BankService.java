@@ -18,9 +18,9 @@ public interface BankService {
 	
 	public List<Items> viewACustomerAccount(int id);
 	
-	public boolean newAcct(Items savingsAccount);
+	public boolean newAcct(int choose, Items savingsAccount);
 
-	public boolean newAcct2(Items checkingsAccount);
+	//public boolean newAcct2(Items checkingsAccount);
 	
 	public double getMoney(int choice, String getUser);
 	
