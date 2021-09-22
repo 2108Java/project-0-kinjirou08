@@ -113,7 +113,7 @@ public class LogIn implements Logging_In {
 					} else {
 						Items savingsAccount = new Items(newBankAccount,user,amount);
 							if (service.newAcct(choose, savingsAccount)) {
-								System.out.println("Your Bank Account: "+newBankAccount);
+								System.out.println("Your Bank Account is: "+newBankAccount);
 								System.out.println("You've successfully added a new savings account!");
 								correctAmount = false;
 							}
@@ -132,8 +132,9 @@ public class LogIn implements Logging_In {
 						System.out.println("Starting amount cannot be less than 0!");
 					} else {				
 						Items checkingsAccount = new Items (user,amount,newBankAccount);
-						System.out.println("Your Bank Account: "+newBankAccount);
+						
 							if (service.newAcct(choose, checkingsAccount)) {
+								System.out.println("Your Bank Account: "+newBankAccount);
 								System.out.println("You've successfully added a new checkings account!");
 								correctAmount = false;
 							}
@@ -452,6 +453,8 @@ public class LogIn implements Logging_In {
 				service.setJointAccount(bankAccount, getUser);
 				service.setJointAccount(bankAccount, getUser2);
 				if (service.createJointAccount(bankAccount, getUser, getUser2, amount)) {
+					System.out.println("Your Joint Account number is" +bankAccount);
+					System.out.println("Current balance is: "+amount);
 					System.out.println("Joint account successfully created!");
 					loggy.info("Successfully created a joint account!");
 				} else {
@@ -602,6 +605,7 @@ public class LogIn implements Logging_In {
 			System.out.println("4) Transfer money ");
 			System.out.println("5) View balance");
 			System.out.println("6) Apply for a joint account");
+			System.out.println("0) Exit");
 			
 			System.out.println("");
 			
@@ -701,6 +705,9 @@ public class LogIn implements Logging_In {
 			case 6:
 				applyJointAccount(0,getUser);
 				break;
+				
+			case 0:
+				yn = 'n';
 			default: 
 				//System.out.println("Invalid input, try again!");
 				loggy.warn("Invalid input, try again!");
@@ -800,6 +807,7 @@ public class LogIn implements Logging_In {
 				if (security.auth(user)) {
 					System.out.print("Hello, " + user + ", What is your password? ");							
 					String pass = sc.nextLine();
+					System.out.println("");
 					
 						
 						if (security.validate(user, pass)) {
